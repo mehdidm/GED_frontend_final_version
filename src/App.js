@@ -12,6 +12,8 @@ import Update from './pages/update_profile/Update_profile';
 import Redirect_email from './pages/redirect/Redirect_email';
 import Redirect from './pages/redirect/Redirect';
 import Reset from './pages/redirect/Reset';
+import Archive from './pages/archive/Archive';
+
 
 
 function App() {
@@ -40,6 +42,7 @@ function App() {
     <Route path="/"   exact component={Home}/>
     <Route path="/files"   component={Files}/>
     <Route path="/update"   component={Update}/>
+    <Route path="/archive"   component={Archive}/>
     <Route path="/profile"   component={Profil}/>
             </>
    
