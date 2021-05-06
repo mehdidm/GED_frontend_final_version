@@ -2,11 +2,12 @@
 import axios from "axios";
 import React, { useState, useEffect } from 'react'
 import _, { initial, slice } from 'lodash'
-import {useTable ,useFilters} from 'react-table'
-const pageSize = 2 ;
+
+const pageSize = 2;
 export default function Users() {
     const [users, setData] = useState();
-    const [paginated , setpaginated] = useState();
+    const [q, setQ] = useState("");
+    const [paginated, setpaginated] = useState();
     const [currentPage, setcurrentPage] = useState(1)
     useEffect(
         () => {
@@ -17,17 +18,33 @@ export default function Users() {
                     setpaginated(_(res.data).slice(0).take(pageSize).value());
                 })
         }, []);
-const pageCount = users? Math.ceil( users.length/pageSize): 0;
-if(pageCount===1)return null;
-const pages =_.range(1,pageCount+1)
-const pagination =(pageNo)=>{
-    setcurrentPage(pageNo);
-    const startIndex = (pageNo -1)*pageSize;
-    const paginated =_(users).slice(startIndex).take(pageSize).value();
-    setpaginated(paginated)
-}
+    const pageCount = users ? Math.ceil(users.length / pageSize) : 0;
+    if (pageCount === 1) return null;
+    const pages = _.range(1, pageCount + 1)
+    const pagination = (pageNo) => {
+        setcurrentPage(pageNo);
+        const startIndex = (pageNo - 1) * pageSize;
+        const paginated = _(users).slice(startIndex).take(pageSize).value();
+        setpaginated(paginated)
+    }
+    //filter function//
+    function search(rows) {
+        return rows.filter(
+            (row) => 
+            row.firstName.toLowerCase().indexOf(q) > -1 ||
+            row.lastName.toLowerCase().indexOf(q) > -1 ||
+            row.email.toLowerCase().indexOf(q) > -1 ||
+            row.numtel.toLowerCase().indexOf(q) > -1 ||
+            row.appUserRole.toLowerCase().indexOf(q) > -1
+            ) ;
+    }
+    //End filter function//
     return (
         <div>
+
+            <div>
+                <input type="text" value={q} onChange={(e) => setQ(e.target.value)} />
+            </div>
             {  !paginated ? ("No data found") : (
                 <table className='table'>
                     <thead className="thead-light">
@@ -42,7 +59,7 @@ const pagination =(pageNo)=>{
                         </tr>
                     </thead>
                     <tbody>
-                        {paginated.map((user, index) => (
+                        {search(paginated).map((user, index) => (
                             <tr key={index}>
                                 <td>{user.id}</td>
                                 <td>{user.image}</td>
@@ -52,29 +69,29 @@ const pagination =(pageNo)=>{
 
                                 <td>{user.appUserRole}</td>
                                 <td>{user.numtel}</td>
-                              
+
                             </tr>
                         ))}
                     </tbody>
                 </table>
             )
             }
-            
+
             <nav aria-label="Page navigation example">
-  <ul className="pagination">
-      {
-          pages.map((page)=>(
-            <li className={
-                page=== currentPage ? "page-item active" : "page-item"
-            }>
-                <p className="page-link"
-                onClick={()=>pagination(page)}>{page}</p>
-            </li>
-          ))
-      }
-    
-  </ul>
-</nav>
+                <ul className="pagination">
+                    {
+                        pages.map((page) => (
+                            <li className={
+                                page === currentPage ? "page-item active" : "page-item"
+                            }>
+                                <p className="page-link"
+                                    onClick={() => pagination(page)}>{page}</p>
+                            </li>
+                        ))
+                    }
+
+                </ul>
+            </nav>
         </div>
 
     )

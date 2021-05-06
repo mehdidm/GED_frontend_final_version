@@ -14,11 +14,13 @@ require("isomorphic-fetch");
 export default function Admin() {
     const [data, setData] = useState([])
     const [q, setQ] = useState("");
-  
+  function search(rows){
+      return rows.filter(row => row.firstName.toLowerCase().indexOf(q)>-1)
+  }
 
     return (
         <div>
-            <div>filter </div>
+            
             <div>
                 <Users></Users>
 
