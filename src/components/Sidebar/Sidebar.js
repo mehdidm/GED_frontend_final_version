@@ -1,5 +1,6 @@
 import React from 'react';
 import logo from "../../assets/logo.png";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   CDBSidebar,
   CDBSidebarContent,
@@ -48,6 +49,18 @@ const Sidebar = () => {
                   Analytics
                 </CDBSidebarMenuItem>
               </NavLink>
+              <NavLink exact to="/Administration" activeClassName="activeClicked">
+                <CDBSidebarMenuItem icon="hdd">
+              
+                  Administration
+                </CDBSidebarMenuItem>
+              </NavLink>
+              <NavLink exact to="/users" activeClassName="activeClicked">
+                <CDBSidebarMenuItem icon="users">
+              Users
+                </CDBSidebarMenuItem>
+              </NavLink>
+          
               <NavLink
                 exact
                 to="/hero404"

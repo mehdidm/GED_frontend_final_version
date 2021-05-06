@@ -13,6 +13,9 @@ import Redirect_email from './pages/redirect/Redirect_email';
 import Redirect from './pages/redirect/Redirect';
 import Reset from './pages/redirect/Reset';
 import Archive from './pages/archive/Archive';
+import User from './pages/test';
+import Admin from './pages/administration/Admin';
+
 
 
 
@@ -44,6 +47,9 @@ function App() {
     <Route path="/update"   component={Update}/>
     <Route path="/archive"   component={Archive}/>
     <Route path="/profile"   component={Profil}/>
+    <Route path="/ts"   component={User}/>
+    <Route path="/Administration"   component={Admin}/>
+    
             </>
    
           :

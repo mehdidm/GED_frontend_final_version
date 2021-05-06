@@ -159,7 +159,11 @@ export function MyDropzone({ id }) {
   const onDrop = useCallback(acceptedFiles => {
     const file = acceptedFiles[0];
 
-
+    const config = {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }
 
     const formData = new FormData();
     formData.append("file", file);
@@ -167,13 +171,9 @@ export function MyDropzone({ id }) {
     formData.append("groupe", 1);
 
 
-    axios.post(`http://localhost:8080/files/${id}`,
-      formData,
-      {
-        Headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-      }
+    axios.post(`http://localhost:8080/files/${id}`, formData,config
+
+     
     ).then(() => {
       console.log("file uploaded successfully")
       alert("file uploaded successfully")
@@ -219,13 +219,9 @@ export function MyDropzone_file() {
 
 
     console.log(file);
-    axios.post(`http://localhost:8080/files`, formData,
+    axios.post(`http://localhost:8080/files`, formData,config
 
-      {
-        Headers: {
-          "Content-Type": "multipart/form-data",
-        }
-      }
+     
     ).then(() => {
       console.log("file uploaded successfully")
     }
