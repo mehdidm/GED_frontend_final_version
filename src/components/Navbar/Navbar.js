@@ -72,9 +72,13 @@ function Navbar() {
         <a href="#">
           <i className="fa fa-search" aria-hidden="true"></i>
         </a>
+        <a href="/addUser">
+          <i className="fa fa-plus-circle"></i>
+        </a>
         <a href="/login">
           <i className="fa fa-home"></i>
         </a>
+       
 
       </div>
     </nav>

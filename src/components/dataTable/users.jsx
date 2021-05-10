@@ -1,10 +1,12 @@
 
 import axios from "axios";
 import React, { useState, useEffect } from 'react'
+import {useHistory} from "react-router-dom"
 import _, { initial, slice } from 'lodash'
 
-const pageSize = 2;
+const pageSize = 10;
 export default function Users() {
+    const history = useHistory();
     const [users, setData] = useState();
     const [q, setQ] = useState("");
     const [paginated, setpaginated] = useState();
@@ -30,15 +32,44 @@ export default function Users() {
     //filter function//
     function search(rows) {
         return rows.filter(
-            (row) => 
-            row.firstName.toLowerCase().indexOf(q) > -1 ||
-            row.lastName.toLowerCase().indexOf(q) > -1 ||
-            row.email.toLowerCase().indexOf(q) > -1 ||
-            row.numtel.toLowerCase().indexOf(q) > -1 ||
-            row.appUserRole.toLowerCase().indexOf(q) > -1
-            ) ;
+            (row) =>
+                row.firstName.toLowerCase().indexOf(q) > -1 ||
+                row.lastName.toLowerCase().indexOf(q) > -1 ||
+                row.email.toLowerCase().indexOf(q) > -1 ||
+                row.numtel.toLowerCase().indexOf(q) > -1 ||
+                row.appUserRole.toLowerCase().indexOf(q) > -1
+        );
     }
     //End filter function//
+    //Update function//
+    
+    function Update(id) {
+        
+        console.log(id)
+        history.push({
+            pathname:'/updateUser/' + id,
+           state: {  // location state
+            id: id, 
+          },})
+    }
+    //Update function//
+    //DELETE function//
+    function deleteUser(id) {
+
+
+
+        if (window.confirm('Etes vous sur de vouloir supprimer cet utilisateur?')) {
+            axios.delete(`users/${id}`)
+                .then(res => {
+                    console.log(res.data)
+
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
+    }
+    //DELETE function//
     return (
         <div>
 
@@ -55,7 +86,9 @@ export default function Users() {
                             <th>Last Name</th>
                             <th>Email</th>
                             <th>Role</th>
-                            <th>Tel</th>
+                            < th>Tel</th>
+                            <th>Delete</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -69,6 +102,11 @@ export default function Users() {
 
                                 <td>{user.appUserRole}</td>
                                 <td>{user.numtel}</td>
+                                <td>
+                                    <button type="button" className="btn btn-danger" onClick={() => { deleteUser(user.id) }} ><i className="fa fa-ban" aria-hidden="true" ></i></button>
+                                </td><td>  <button type="button" className="btn btn-primary" onClick={() => Update(user.id)}><i className="fa fa-edit" aria-hidden="true" ></i></button>
+
+                                </td>
 
                             </tr>
                         ))}

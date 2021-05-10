@@ -39,7 +39,8 @@ export default function Home() {
 
 
 
-  return (<main>
+  return (
+  <main>
     <div className="main__container">
       {/* <!-- MAIN TITLE STARTS HERE --> */}
 

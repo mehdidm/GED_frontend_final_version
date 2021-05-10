@@ -15,6 +15,12 @@ import Reset from './pages/redirect/Reset';
 import Archive from './pages/archive/Archive';
 import User from './pages/test';
 import Admin from './pages/administration/Admin';
+import AddUser from './pages/administration/Add_user';
+import Test from './pages/administration/Test';
+import UpdateUser from './pages/administration/UpdateUser';
+
+
+
 
 
 
@@ -49,6 +55,10 @@ function App() {
     <Route path="/profile"   component={Profil}/>
     <Route path="/ts"   component={User}/>
     <Route path="/Administration"   component={Admin}/>
+    <Route path="/addUser"   component={AddUser}/>
+    <Route path="/test"   component={Test}/>
+    <Route path="/updateUser"   component={UpdateUser}/>
+    
     
             </>
    
@@ -60,6 +70,8 @@ function App() {
     <Route path="/login"   component={Login}/>
     <Route path="/Redirict"   component={Redirect}/>
     <Route path="/red_email"   component={Redirect_email}/>
+    
+   
     </>
         }
  
