@@ -1,19 +1,25 @@
 
 import axios from "axios";
 import React, { useState, useEffect } from 'react'
-import {useHistory} from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import _, { initial, slice } from 'lodash'
+import hello from "../../assets/avatar.png";
 
-const pageSize = 10;
+const pageSize = 1;
 export default function Users() {
     const history = useHistory();
+    const config = {
+        headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+    };
     const [users, setData] = useState();
     const [q, setQ] = useState("");
     const [paginated, setpaginated] = useState();
     const [currentPage, setcurrentPage] = useState(1)
     useEffect(
         () => {
-            axios.get('users')
+            axios.get('users', config)
                 .then(res => {
                     console.log(res.data);
                     setData(res.data);
@@ -33,36 +39,38 @@ export default function Users() {
     function search(rows) {
         return rows.filter(
             (row) =>
-                row.firstName.toLowerCase().indexOf(q) > -1 ||
-                row.lastName.toLowerCase().indexOf(q) > -1 ||
-                row.email.toLowerCase().indexOf(q) > -1 ||
-                row.numtel.toLowerCase().indexOf(q) > -1 ||
-                row.appUserRole.toLowerCase().indexOf(q) > -1
+                row.firstName.toLowerCase().indexOf(q.toLowerCase()) > -1 ||
+                row.lastName.toLowerCase().indexOf(q.toLowerCase()) > -1 ||
+                row.email.toLowerCase().indexOf(q.toLowerCase()) > -1 ||
+                row.numtel.toLowerCase().indexOf(q.toLowerCase()) > -1 ||
+                row.appUserRole.toLowerCase().indexOf(q.toLowerCase()) > -1
         );
     }
     //End filter function//
     //Update function//
-    
+
     function Update(id) {
-        
+
         console.log(id)
         history.push({
-            pathname:'/updateUser/' + id,
-           state: {  // location state
-            id: id, 
-          },})
+            pathname: '/updateUser/' + id,
+            state: {  // location state
+                id: id,
+            },
+        })
     }
     //Update function//
     //DELETE function//
+
     function deleteUser(id) {
 
 
 
         if (window.confirm('Etes vous sur de vouloir supprimer cet utilisateur?')) {
-            axios.delete(`users/${id}`)
+            axios.delete(`users/${id}`, config)
                 .then(res => {
                     console.log(res.data)
-
+                    window.location.reload(false)
                 })
                 .catch(err => {
                     console.log(err)
@@ -71,37 +79,47 @@ export default function Users() {
     }
     //DELETE function//
     return (
-        <div>
+        <div >
 
-            <div>
-                <input type="text" value={q} onChange={(e) => setQ(e.target.value)} />
-            </div>
+
+            <input className="form-control" placeholder="Chercher ..." style={{ marginTop: 50, marginLeft: 10, marginBottom: 20, width: "20%" }} type="text" value={q} onChange={(e) => setQ(e.target.value)} />
+
             {  !paginated ? ("No data found") : (
                 <table className='table'>
                     <thead className="thead-light">
                         <tr>
                             <th>ID</th>
                             <th>Image</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
+                            <th>Prenom</th>
+                            <th>Nom</th>
                             <th>Email</th>
                             <th>Role</th>
                             < th>Tel</th>
+                            <th>Groupes</th>
                             <th>Delete</th>
-                            <th>Delete</th>
+                            <th>Modifier</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {search(paginated).map((user, index) => (
+                        {users.map((user, index) => (
                             <tr key={index}>
                                 <td>{user.id}</td>
-                                <td>{user.image}</td>
+                       
+                                <td>
+                                    {user.image ?
+                                        <img className="rounded-image" src={`data:image/jpeg;base64,${user.image}`} />
+                                        :
+                                        <img className="rounded-image" src={hello} />
+                                    }
+                                </td>
                                 <td>{user.firstName}</td>
                                 <td>{user.lastName}</td>
                                 <td>{user.email}</td>
-
                                 <td>{user.appUserRole}</td>
                                 <td>{user.numtel}</td>
+                                
+                                <td><Groupes id ={user.id}></Groupes></td>
+                              
                                 <td>
                                     <button type="button" className="btn btn-danger" onClick={() => { deleteUser(user.id) }} ><i className="fa fa-ban" aria-hidden="true" ></i></button>
                                 </td><td>  <button type="button" className="btn btn-primary" onClick={() => Update(user.id)}><i className="fa fa-edit" aria-hidden="true" ></i></button>
@@ -115,24 +133,36 @@ export default function Users() {
             )
             }
 
-            <nav aria-label="Page navigation example">
-                <ul className="pagination">
-                    {
-                        pages.map((page) => (
-                            <li className={
-                                page === currentPage ? "page-item active" : "page-item"
-                            }>
-                                <p className="page-link"
-                                    onClick={() => pagination(page)}>{page}</p>
-                            </li>
-                        ))
-                    }
-
-                </ul>
-            </nav>
+           
         </div>
 
     )
 
 
 }
+export function Groupes({ id }) {
+    const config = {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }
+    const [groupes, setGroupes] = useState([])
+    useEffect(() => {
+      axios.get(`userGroupes/${id}`, config)
+        .then(res => {
+          console.log(res.data)
+          setGroupes(res.data)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }, [])
+    return (
+      <div>
+  
+        { groupes.map(groupe => <li>{groupe[1]}</li>)}
+  
+      </div>
+  
+    )
+  }

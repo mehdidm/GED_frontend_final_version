@@ -29,66 +29,73 @@ export default function Update (){
         getCurrentUse()
       }, [])
     
-      const handleSubmit = e =>{
-        e.preventDefault();
-        const id = localStorage.getItem('id')
-        const data ={
-            username : this.username,
-            password:this.password
-        }
-        axios.put('user/'+id, data)
-        
-        .then(res => {
-           
-            localStorage.setItem('token', res.data.token);
-            localStorage.setItem('id', res.data.id);
-            console.log(res)
-           if (res.status===200) {
-            
-          this.props.history.push("/");
-            window.location.reload();
-           }
-          
-        })
-        .catch(err =>{
-            alert(err)
-        })
-    };
+   
+  function submit(e) {
+    const id = localStorage.getItem('id')
+
+    e.preventDefault();
+    axios.put(`user/${id}`, {
+      firstName: User.firstName,
+      lastName: User.lastName,
+      email: User.email,
+      numtel: User.numtel,
+      
+    }
+
+      , config)
+      .then(res => {
+        console.log(res.User)
+
+       // history.push("/Administration");
+         window.location.reload();
+
+      }).catch(err => console.error(err))
+  }
+  function handle(e) {
+    const newdata = { ...User }
+    newdata[e.target.id] = e.target.value
+    setUsername(newdata)
+    console.log(newdata)
+    console.log('USER=', User)
+  }
  
         return (
             <Container style={{ marginTop: 10 + 'em' }}>
-               <form onSubmit={handleSubmit}> 
-                <h1>Hello</h1>
-                    
-                    <div class="row">
-                        <div className="col">
-                            <label>First name</label>
-                            <input type="text" className="form-control" placeholder= {User.firstName} aria-label="First name" />
-                        </div>
-                        <div className="col">
-                        <label>Last name</label>
-                            <input type="text" className="form-control" placeholder={User.lastName} aria-label="Last name" />
-                        </div>
-                    </div>
-                    <br></br>
-                    <div class="row">
-                        <div className="col">
-                        <label>email</label>
-                            <input type="email" className="form-control" placeholder={User.email}  aria-label="First name" />
-                        </div>
-                        <div className="col">
-                        <label>Num Tel</label>
-                            <input type="text" className="form-control" placeholder={User.numtel}  aria-label="Last name" />
-                        </div>
-                    </div>
-                  
-                <br></br>
-                    <button className="btn btn-primary btn-block">Login</button>
-                </form>
+       
+                <form onSubmit={(e) => submit(e)}>
+            <h1>Modifier Utilisateur</h1>
+            <br></br>
 
+            <div className="row">
+              <div className="col">
+                <label>Prénom</label>
+                <input type="text" className="form-control" placeholder=" First Name" aria-label="First name" onChange={(e) => handle(e)} id="firstName" value= {User.firstName} />
+              </div>
+              <div className="col">
+                <label>Nom</label>
+                <input type="text" className="form-control" placeholder="Last Name" aria-label="Last name" onChange={(e) => handle(e)} id="lastName" value={User.lastName} />
+              </div>
+            </div>
+            <br></br>
+            <div className="row">
+              <div className="col">
+                <label>Email</label>
+                <input type="email" className="form-control" placeholder="Email" aria-label="Email" onChange={(e) => handle(e)} id="email" value={User.email} />
+              </div>
+              <div className="col">
+                <label>Tel</label>
+                <input type="number" className="form-control" placeholder="Tel° " aria-label="Tel" onChange={(e) => handle(e)} id="numtel" value={User.numtel} />
+              </div>
+            </div>
+           
+
+            <br></br>
+            <button className="btn btn-primary btn-block">Update</button>
+          </form>
+
+     
             </Container>
 
         )
     }
-
 

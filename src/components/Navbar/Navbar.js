@@ -46,8 +46,8 @@ function Navbar() {
     
     <nav className="navbar">
       <div className="navbar__left">
-        <a href="#">Subscribers</a>
-        <a href="#">Video Management</a>
+        <a href="/MesFichiers">Mes fichiers</a>
+        <a href="/FichiersPublics">Fichiers publics</a>
         <a className="active_link" href="#">
           Admin
         </a>

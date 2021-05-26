@@ -1,62 +1,120 @@
 import "./Archive.css";
+import axios from "axios";
+import archiver from "../../assets/archiver.png"
+import React, { useState, useEffect, useCallback } from 'react';
 
-import hello from "../../assets/avatar.png";
+import ReactPaginate from "react-paginate";
+import { useHistory , Link} from "react-router-dom"
 
+function Archive() {
 
-
-
-import React, { Component } from 'react';
-import Countries from 'countries-api';
-
-import Pagination from './../../components/archive_card/Pagination'
-import CountryCard from './../../components/archive_card/Archive_card';
-
-class Archive extends Component {
-  state = { allCountries: [], currentCountries: [], currentPage: null, totalPages: null }
-
-  componentDidMount() {
-    const { data: allCountries = [] } = Countries.findAll();
-    this.setState({ allCountries });
+  const config = {
+    headers: {
+      Authorization: 'Bearer ' + localStorage.getItem('token')
+    }
   }
-  render() {
-    const { allCountries, currentCountries, currentPage, totalPages } = this.state;
-    const totalCountries = allCountries.length;
+  const [archives, setArchives] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+  const archivePerPage = 3;
+  const pagesVisited = pageNumber * archivePerPage;
+  const [searchTerm, setSearchTerm] = useState('')
+  const pageCount = Math.ceil(archives.length / archivePerPage);
+  const changePage = ({ selected }) => { setPageNumber(selected); };
+  const history = useHistory();
 
-    if (totalCountries === 0) return null;
 
-    const headerClass = ['text-dark py-2 pr-4 m-0', currentPage ? 'border-gray border-right' : ''].join(' ').trim();
-
-    return (
-      <div className="container ">
-        <div className="row d-flex flex-row py-5">
-          <div className="w-100 px-4 py-5 d-flex flex-row flex-wrap align-items-center justify-content-between">
-            <div className="d-flex flex-row align-items-center">
-              <h2 className={headerClass}>
-                <strong className="text-secondary">{totalCountries}</strong> Dossiers
-              </h2>
-              { currentPage && (
-                <span className="current-page d-inline-block h-100 pl-4 text-secondary">
-                  Page <span className="font-weight-bold">{ currentPage }</span> / <span className="font-weight-bold">{ totalPages }</span>
-                </span>
-              ) }
-            </div>
-            <div className="d-flex flex-row py-4 align-items-center">
-              <Pagination totalRecords={totalCountries} pageLimit={9} pageNeighbours={1} onPageChanged={this.onPageChanged} />
-            </div>
+  useEffect(() => {
+    axios.get(`archive`)
+      .then(res => {
+        console.log(res.data)
+        setArchives(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }, [])
+  //function to send num° dossier to archive_contenu page//
+  function Contenu(num) {
+        
+    console.log(num)
+    history.push({
+        pathname:'/Archive_contenu/' + num,
+       state: {  // location state
+        num: num, 
+      },})
+}
+  //function to send num° dossier to archive_contenu page//
+  const displayArchive = archives
+    .slice(pagesVisited, pagesVisited + archivePerPage)
+    .filter((val)=>{
+      if (searchTerm == ""){
+        return val
+        
+      }
+      
+      else if (val.archives.array[0].toLowerCase().incldes(searchTerm.toLowerCase())){
+        
+        return val
+        console.log(val);
+      }
+    })
+    .map((archive, key) => {
+      return (
+        <div className="card" key={key} style={{ width: "18rem" }}>
+          <img className="card-img-top" src={archiver} alt="Card image cap" style={{ width: "5rem", margin: "auto" }} />
+          <div className="card-body">
+            <h5 className="card-title">{archive[1]}</h5>
+            <p >Nom Personnel : {archive[7]}</p>
+            <p >Serie: {archive[8]}</p>
+            <p >Num° Dossier: {archive[0]}</p>
+            <p >Matricule: {archive[4]}</p>
+            <p >Nombre pieces: {archive[6]}</p>
+            
+            <button className="btn btn-primary" onClick={() =>Contenu(archive[0])}>Consulter les fichiers</button>
           </div>
-          { currentCountries.map(country => <CountryCard key={country.cca3} country={country} />) }
         </div>
-      </div>
-    );
-  }
-  onPageChanged = data => {
-    const { allCountries } = this.state;
-    const { currentPage, totalPages, pageLimit } = data;
-    const offset = (currentPage - 1) * pageLimit;
-    const currentCountries = allCountries.slice(offset, offset + pageLimit);
+      )
+    });
+ 
+  return (
 
-    this.setState({ currentPage, currentCountries, totalPages });
-  }
+    <div className="container">
+      <h1 className="title_archive">-Archive-</h1>
+      <h5 className="title_archive">Nombre totale de dossiers ({archives.length})</h5>
+      
+        
+      <hr />
+      <div className="row" >
+      <input
+        type="text"
+        className="form-control"
+        placeholder="Rechercher ..."
+        style={{ width: "30%" }}
+        onChange={event => {
+          setSearchTerm(event.target.value)
+        }} />
+        <Link to='/addDossier' style={{ marginLeft: "40%" }}>
+        <button className="btn btn-dark">  <i className="fa fa-plus-circle"></i> Ajouter dossier</button>
+     
+      </Link>
+      </div>
+      
+      <div className="row" style={{ margin: "auto" }}>
+
+        {displayArchive}
+        <ReactPaginate
+          previousLabel={"Previous"}
+          nextLabel={"Next"}
+          pageCount={pageCount}
+          onPageChange={changePage}
+          containerClassName={"paginationBttns"}
+          previousClassName={"previousBttn"}
+          nextLinkClassName={"nextBttn"}
+          activeClassName={"paginationActive"}
+        />
+      </div>
+    </div>
+  )
 }
 
 export default Archive;

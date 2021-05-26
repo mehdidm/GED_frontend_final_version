@@ -1,11 +1,49 @@
 .a1{
     color:white
 }
+input[type="file"]{
+  display :none;
+  
+}
+
+.static{
+  position: static;
+}
+.gauche{
+  left:100px;
+}
+label{
+  color:rgb(18, 157, 182);
+  height: 25px;
+  width:150px;
+  margin:auto;
+  font-size:20;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
 main {
     background: #f3f4f6;
  
   }
 
+  .rounded-circle-userGroupe{
+    width:40%;
+    height:150%;
+    border-radius: 50%;
+  
+    object-fit: cover;
+    object-position: center ;
+  }
+
+  .rounded-circle{
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+  
+    object-fit: cover;
+    object-position: center ;
+  }
 
 
   .main__container {

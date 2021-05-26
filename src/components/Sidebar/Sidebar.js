@@ -55,9 +55,10 @@ const Sidebar = () => {
                   Administration
                 </CDBSidebarMenuItem>
               </NavLink>
-              <NavLink exact to="/users" activeClassName="activeClicked">
+           
+              <NavLink exact to="/groupes" activeClassName="activeClicked">
                 <CDBSidebarMenuItem icon="users">
-              Users
+              Groupes
                 </CDBSidebarMenuItem>
               </NavLink>
           

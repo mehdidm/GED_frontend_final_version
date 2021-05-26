@@ -3,39 +3,18 @@ import { useDropzone } from 'react-dropzone';
 import React, { useState, useEffect, useCallback, Component } from 'react';
 import axios from "axios";
 import AuthService from "../../services/auth"
-import hello from "../../assets/avatar.png";
+import doc from "../../assets/doc.png";
 import * as ReactBootstrap from "react-bootstrap";
+import { useHistory, useLocation, Link } from "react-router-dom"
 
 
 
 
 
-export default function Home() {
-
-  const [UserName, setUsername] = useState("");
-
-  useEffect(() => {
-    const getCurrentUse = () => {
-      const id = AuthService.getCurrentUser();
-      const config = {
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-      };
-      axios.get('user/' + id, config).then(
-        res => {
-          console.log(res.data.firstName);
-          setUsername(res.data.firstName)
-        },
-        err => {
-          console.log(err)
-        }
-      )
-    }
-    getCurrentUse()
-  }, [])
+export default function MesFichiers() {
 
 
+  const id = AuthService.getCurrentUser();
   const config = {
     headers: {
       Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -43,7 +22,7 @@ export default function Home() {
   }
   const [files, setfiles] = useState([]);
   async function FetchFiles() {
-    await axios.get('files', config).then(res => {
+    await axios.get(`/files/ListFiles/${id}`, config).then(res => {
       console.log(res.data)
       setfiles(res.data)
     });
@@ -54,27 +33,24 @@ export default function Home() {
     }, []);
 
 
-
-
-
-
-
-
-
-
   return (
     <main>
+
       <div className="main__container">
+        <h1 style={{ textAlign: "center", margin: "2%" }}>- Mes fichiers -</h1>
+        <h5 style={{ textAlign: "center", margin: "2%" }}>- Nombre total des fichiers ({files.length}) -</h5>
         <MyDropzone_file></MyDropzone_file>
-        <ReactBootstrap.Table striped bordered hover>
+        <table className="table table-striped" >
           <thead>
             <tr>
-              <th>Name</th>
+              <th></th>
+              <th>Nom</th>
               <th>id</th>
-              <th>size</th>
-              <th>ADD</th>
-              <th>CONFIG</th>
-              <th>CONFIG</th>
+              <th>Type</th>
+              <th>Taille de fichier</th>
+              <th>date de création</th>
+              <th>Télécharger</th>
+              <th>Versions</th>
 
             </tr>
           </thead>
@@ -82,7 +58,7 @@ export default function Home() {
             {files.map(RenderFiles)}
 
           </tbody>
-        </ReactBootstrap.Table>
+        </table>
 
 
 
@@ -98,28 +74,42 @@ export default function Home() {
 };
 
 export function RenderFiles(file, index) {
+  const history = useHistory();
+  function Contenu(num) {
 
+    console.log(num)
+    history.push({
+        pathname: '/ListeVersions/' + num,
+        state: {  // location state
+            num: num,
+        },
+    })
+  }
+  
   return (
     <tr key={index}>
+      <td>   
+         <img className="card-img-top" src={doc} alt="Card image cap" style={{ width: "2rem", margin: "auto" }} />
+      </td>
       <td> {file[1]}</td>
       <td>{file[0]}</td>
+      <td>{file[2]}</td>
       <td>{file[3]}</td>
-      <td><Versions id={file[0]}></Versions></td>
-      <MyDropzone id={file[0]} />
-
-
-
+      <td>{file[4]}</td>
       <td>
 
-        <ReactBootstrap.Button variant="primary" onClick={() => { window.location.href = "http://localhost:8080/files/" + file[0] }} >
-          Download main file
-        </ReactBootstrap.Button>
-        <br />
-        <br />
+        <button className="btn btn-dark" style={{ marginLeft: "20%", marginRight: "20%" }} onClick={() => { window.location.href = "http://localhost:8080/files/" + file[0] }} >
+          <i class="fa fa-download" aria-hidden="true"></i>
+        </button>
 
       </td>
+      <td>
 
+        <button className="btn btn-dark" style={{ marginLeft: "20%", marginRight: "20%" }} onClick={() => Contenu(file[0])} >
+          <i class="fa fa-file" aria-hidden="true"></i>
+        </button>
 
+      </td>
 
     </tr>
 
@@ -155,52 +145,7 @@ export function Versions({ id }) {
   )
 }
 
-export function MyDropzone({ id }) {
-  const onDrop = useCallback(acceptedFiles => {
-    const file = acceptedFiles[0];
 
-    const config = {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("user", id);
-    formData.append("groupe", 1);
-
-
-    axios.post(`http://localhost:8080/files/${id}`, formData, config
-
-
-    ).then(() => {
-      console.log("file uploaded successfully")
-      alert("file uploaded successfully")
-    }
-
-    ).catch(er => {
-      console.log(er);
-    });
-
-  }, [])
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
-
-
-  return (
-    <div {...getRootProps()}>
-      <input {...getInputProps()} />
-      {
-        isDragActive ?
-          (<p>Drop the files here ...</p>) : (
-            <ReactBootstrap.Button variant="info">ADD NEW FILE</ReactBootstrap.Button>
-          )
-
-      }
-    </div>
-  )
-
-};
 export function MyDropzone_file() {
   const config = {
     headers: {
@@ -219,11 +164,13 @@ export function MyDropzone_file() {
 
 
     console.log(file);
-    axios.post(`http://localhost:8080/files`, formData, config
+    axios.post(`http://localhost:8080/files/private`, formData, config
 
 
     ).then(() => {
       console.log("file uploaded successfully")
+      alert('fichier ajouter')
+      window.location.reload(false)
     }
 
     ).catch(er => {
@@ -239,10 +186,15 @@ export function MyDropzone_file() {
       {
         isDragActive ?
           (<p>Drop the files here ...</p>) : (
-            <ReactBootstrap.Button variant="info">ADD NEW FILE</ReactBootstrap.Button>
+
+            <button className="btn btn-dark" style={{ marginLeft: "90%", marginBottom: "12px" }}>  <i className="fa fa-plus-circle"></i> Ajouter fichier</button>
+
           )
 
       }
     </div>
   )
 };
+ //function to send id file ti versions  page//
+
+//function to send id file ti versions  page//

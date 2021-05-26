@@ -1,12 +1,13 @@
 
 import hello from "../../assets/avatar.png";
 
-import React, { useState, useEffect, Link, Component } from 'react';
+import React, { useState, useEffect , Component } from 'react';
+import { useHistory , Link} from "react-router-dom"
 import axios from "axios";
-import link from 'react-router-dom';
+
 import AuthService from "../../services/auth"
-import test from "../test";
-import   "./profil.css";
+
+import "./profil.css";
 
 
 
@@ -15,18 +16,21 @@ import   "./profil.css";
 export default function Profil() {
 
   const [UserName, setUsername] = useState([]);
-  const config ={
-    headers:{
+
+  const id = AuthService.getCurrentUser();
+  // console.log(id)
+  const config = {
+    headers: {
       Authorization: 'Bearer ' + localStorage.getItem('token')
     }
   }
   useEffect(() => {
     const getCurrentUse = () => {
-      const id = AuthService.getCurrentUser();
 
-      axios.get('user/' + id,config).then(
+
+      axios.get('user/' + id, config).then(
         res => {
-          console.log(res);
+          //console.log(res);
           setUsername(res.data)
         },
         err => {
@@ -37,99 +41,172 @@ export default function Profil() {
     getCurrentUse()
   }, [])
 
+  const [imageSelected, setImageSelected] = useState("");
+  const uploadImage = () => {
+    console.log(imageSelected);
+    const formData = new FormData()
+    formData.append("image", imageSelected)
 
+    axios.put(`userImage/${id}`, formData, {
+      onUploadProgres: progressEvent => {
+        console.log('Upload Progress' + Math.round((progressEvent.loaded / progressEvent.total) * 100) + '%')
+      }
+    })
+      .then(() => {
+        console.log("file uploaded successfully")
+        //  alert("file uploaded successfully")
+        window.location.reload(false)
+        console.log(UserName.image)
+      }
 
+      ).catch(er => {
+        console.log(er);
+      });
+  }
 
+  console.log(UserName)
+  // console.log(UserName.image)
 
   return (
-  <main className="main1">
-    
-    <div className="main__container">
-      {/* <!-- MAIN TITLE STARTS HERE --> */}
+    <main className="main1">
+      <div className="App">
 
-      <div class="container">
-    <div class="main-body">
-    
-  
-    <button class="btn btn-primary" style={{float:"right"}}><i class="fa fa-edit" ></i> <a href="/update" className="a1">Modifier Profil</a></button>
-    
-          <div class="row gutters-sm">
-            <div class="col-md-4 mb-3">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex flex-column align-items-center text-center">
-                    <img src={hello} alt="Admin" class="rounded-circle" width="260"/>
-                    <div class="mt-3">
-                      <h4>{UserName.firstName} {UserName.lastName} </h4>
-                      <p class="text-secondary mb-1">                   {UserName.appUserRole}</p>
-                      <p class="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
-                   
+        <input
+
+
+          type="file"
+          accept="image/*"
+          id="im"
+          onChange={
+            (event) => {
+              if (event.target.files[0] && event.target.files[0].type.substr(0, 5) === "image") {
+                setImageSelected(event.target.files[0])
+              }
+              else {
+                setImageSelected(null);
+                console.log("image not found")
+              }
+
+            }}
+
+        />
+
+
+      </div>
+      <div className="main__container">
+        {/* <!-- MAIN TITLE STARTS HERE --> */}
+
+        <div className="container">
+          <div className="main-body">
+
+
+
+            <div className="row gutters-sm">
+              <div className="col-md-4 mb-3">
+                <div className="card">
+
+                  <div className="card-body">
+                    <div className="d-flex flex-column align-items-center text-center">
+                      {UserName.image ?
+                        <>
+
+                          <img src={`data:image/jpeg;base64,${UserName.image}`} className="rounded-circle" />
+                         
+
+
+                        </>
+                        :
+                        <>
+                          <img src={hello} alt="Admin" className="rounded-circle" width="260" />
+                        </>
+
+                      }
+                       <div style={{ display: "flex" }}>
+                            <label className="btn btn-primary " for="im" style={{ width: "50px", height: "40px", margin: "5px" }}>
+                              <i className="fas fa-image " style={{ margin: "2px" }}></i>
+                            </label>
+                            <button className="btn btn-primary " onClick={() => {
+                              uploadImage()
+                            }}><i class="fas fa-upload"></i> </button>
+                          </div>
+                      <div className="mt-3">
+                        <h4>{UserName.firstName} {UserName.lastName} </h4>
+                        <p className="text-secondary mb-1">   {UserName.appUserRole}</p>
+
+                        <Link to='/update' >
+                      <button className="btn btn-primary" ><i className="fa fa-edit" ></i> </button>
+                 
+       
+        </Link>
+
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-          </div>
-            <div class="col-md-8">
-              <div class="card mb-3">
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <h6 class="mb-0">Nom & Prénom</h6>
+              <div className="col-md-8">
+                <div className="card mb-3">
+                  <div className="card-body">
+                    <div className="row">
+                      <div className="col-sm-3">
+                        <h6 className="mb-0">Nom & Prénom</h6>
+                      </div>
+                      <div className="col-sm-9 text-secondary">
+                        {UserName.firstName} {UserName.lastName}
+                      </div>
                     </div>
-                    <div class="col-sm-9 text-secondary">
-                    {UserName.firstName} {UserName.lastName} 
+                    <hr />
+                    <div className="row">
+                      <div className="col-sm-3">
+                        <h6 className="mb-0">Email</h6>
+                      </div>
+                      <div className="col-sm-9 text-secondary">
+                        {UserName.email}
+                      </div>
                     </div>
-                  </div>
-                  <hr/>
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <h6 class="mb-0">Email</h6>
+                    <hr />
+                    <div className="row">
+                      <div className="col-sm-3">
+                        <h6 className="mb-0">Téléphone</h6>
+                      </div>
+                      <div className="col-sm-9 text-secondary">
+                        {UserName.numtel}  
+                      </div>
                     </div>
-                    <div class="col-sm-9 text-secondary">
-                    {UserName.email}
+                    <hr />
+                    <div className="row">
+                      <div className="col-sm-3">
+                        <h6 className="mb-0">Groupe</h6>
+                      </div>
+                      <div className="col-sm-9 text-secondary">
+
+                        {UserName.groupe ? UserName.groupe : <p>Pas de groupe disponible</p>}
+                      </div>
                     </div>
-                  </div>
-                  <hr/>
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <h6 class="mb-0">Téléphone</h6>
+                    <hr />
+                    <div className="row">
+                      <div className="col-sm-3">
+                        <h6 className="mb-0">Rôle</h6>
+                      </div>
+                      <div className="col-sm-9 text-secondary">
+                        {UserName.appUserRole}
+                      </div>
                     </div>
-                    <div class="col-sm-9 text-secondary">
-                    {UserName.numtel}
-                    </div>
-                  </div>
-                  <hr/>
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <h6 class="mb-0">Groupe</h6>
-                    </div>
-                    <div class="col-sm-9 text-secondary">
-                    
-                    {UserName.groupe ?UserName.groupe:<p>Pas de groupe disponible</p>}
-                    </div>
-                  </div>
-                  <hr/>
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <h6 class="mb-0">Rôle</h6>
-                    </div>
-                    <div class="col-sm-9 text-secondary">
-                    {UserName.appUserRole}
-                    </div>
+
+
                   </div>
                 </div>
               </div>
-          </div>
+            </div>
           </div>
         </div>
-    </div>
 
 
 
 
-    </div>
+      </div>
 
-  </main>
+    </main>
 
 
   );
