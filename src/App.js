@@ -28,7 +28,7 @@ import FichiersPublics from './pages/fetching_files/FichiersPublic';
 import FichierGroupe from './pages/groupe/FichierGroupes';
 import GroupeUsers from './pages/groupe/GroupeUsers';
 import ListeVersions from './pages/fetching_files/ListeDesVersions';
-import Chat from './pages/chat/Chat';
+
 
 
 
@@ -76,8 +76,7 @@ function App() {
                 <Route path="/FichierGroupe" component={FichierGroupe} />
                 <Route path="/ListeVersions" component={ListeVersions} />
                 <Route path="/GroupeUsers" component={GroupeUsers} />
-                <Route exact path="/chat" render={(props) => <Chat {...props} />} />
-
+           
               </>
 
               :
