@@ -82,6 +82,12 @@ const Sidebar = () => {
                   404 page
                 </CDBSidebarMenuItem>
               </NavLink>
+              <NavLink exact to="/Chat" activeClassName="activeClicked">
+                <CDBSidebarMenuItem icon="">
+              Chat
+                </CDBSidebarMenuItem>
+              </NavLink>
+         
             </CDBSidebarMenu>
           </CDBSidebarContent>
    

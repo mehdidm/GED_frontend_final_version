@@ -28,13 +28,13 @@ import FichiersPublics from './pages/fetching_files/FichiersPublic';
 import FichierGroupe from './pages/groupe/FichierGroupes';
 import GroupeUsers from './pages/groupe/GroupeUsers';
 import ListeVersions from './pages/fetching_files/ListeDesVersions';
+import Chat from './pages/chat.js/Chat';
+import React from "react";
 
 
 
 
-
-
-
+export const AppContext = React.createContext();
 
 function App() {
   return (
@@ -76,6 +76,7 @@ function App() {
                 <Route path="/FichierGroupe" component={FichierGroupe} />
                 <Route path="/ListeVersions" component={ListeVersions} />
                 <Route path="/GroupeUsers" component={GroupeUsers} />
+                <Route path="/Chat" component={Chat} />
            
               </>
 

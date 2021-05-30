@@ -66,7 +66,7 @@ function Navbar() {
             </>
 
           :
-          <button>ahla</button>
+          <div></div>
         }
 
         <a href="#">

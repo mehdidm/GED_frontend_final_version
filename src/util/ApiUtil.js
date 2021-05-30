@@ -1,4 +1,4 @@
-const AUTH_SERVICE = "http://localhost:8081";
+
 const CHAT_SERVICE = "http://localhost:8080";
 
 const request = (options) => {
@@ -8,10 +8,10 @@ const request = (options) => {
     headers.append("Content-Type", "application/json");
   }
 
-  if (localStorage.getItem("accessToken")) {
+  if (localStorage.getItem("token")) {
     headers.append(
       "Authorization",
-      "Bearer " + localStorage.getItem("accessToken")
+      "Bearer " + localStorage.getItem("token")
     );
   }
 
@@ -28,54 +28,35 @@ const request = (options) => {
   );
 };
 
-export function login(loginRequest) {
-  return request({
-    url: AUTH_SERVICE + "/signin",
-    method: "POST",
-    body: JSON.stringify(loginRequest),
-  });
-}
 
-export function facebookLogin(facebookLoginRequest) {
-  return request({
-    url: AUTH_SERVICE + "/facebook/signin",
-    method: "POST",
-    body: JSON.stringify(facebookLoginRequest),
-  });
-}
 
-export function signup(signupRequest) {
-  return request({
-    url: AUTH_SERVICE + "/users",
-    method: "POST",
-    body: JSON.stringify(signupRequest),
-  });
-}
+
 
 export function getCurrentUser() {
-  if (!localStorage.getItem("accessToken")) {
+  const id= localStorage.getItem('id');
+  if (!localStorage.getItem("token")) {
     return Promise.reject("No access token set.");
   }
 
   return request({
-    url: AUTH_SERVICE + "/users/me",
+    url: CHAT_SERVICE + `user/${id}`,
     method: "GET",
   });
 }
 
 export function getUsers() {
-  if (!localStorage.getItem("accessToken")) {
+  if (!localStorage.getItem("token")) {
     return Promise.reject("No access token set.");
   }
 
   return request({
-    url: AUTH_SERVICE + "/users/summaries",
+    url:"http://localhost:8080/users",
     method: "GET",
   });
 }
 
 export function countNewMessages(senderId, recipientId) {
-  if (!localStorage.getItem("accessToken")) {
+  if (!localStorage.getItem("token")) {
     return Promise.reject("No access token set.");
   }
 
@@ -86,7 +67,7 @@ export function countNewMessages(senderId, recipientId) {
 }
 
 export function findChatMessages(senderId, recipientId) {
-  if (!localStorage.getItem("accessToken")) {
+  if (!localStorage.getItem("token")) {
     return Promise.reject("No access token set.");
   }
 
@@ -97,7 +78,7 @@ export function findChatMessages(senderId, recipientId) {
 }
 
 export function findChatMessage(id) {
-  if (!localStorage.getItem("accessToken")) {
+  if (!localStorage.getItem("token")) {
     return Promise.reject("No access token set.");
   }
 

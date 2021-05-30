@@ -68,16 +68,16 @@ export default class Auth extends Component {
                     <div className="col-md-8 col-xs-12 col-sm-12 login_form ">
                         <div className="container">
                           
-                            <div class="row">
+                            <div className="row">
                                 <form onSubmit={this.handleSubmit} style={{ margin: "5% 20%", width: "100%" }}>
                                     <h2>Se connecter</h2>
                                     <div className="form-group">
-                                        <div class="row">
-                                            <input type="text" name="username" id="username" class="form__input" placeholder="Username" onChange={e => this.username = e.target.value} />
+                                        <div className="row">
+                                            <input type="text" name="username" id="username" className="form__input" placeholder="Username" onChange={e => this.username = e.target.value} />
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <div class="row">
+                                        <div className="row">
                                             <input type="password" className="form__input" name="password" placeholder="Password" onChange={e => this.password = e.target.value} />
                                         </div>
                                     </div>
