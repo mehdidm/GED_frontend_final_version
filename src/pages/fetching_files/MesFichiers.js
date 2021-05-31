@@ -99,14 +99,14 @@ export function RenderFiles(file, index) {
       <td>
 
         <button className="btn btn-dark" style={{ marginLeft: "20%", marginRight: "20%" }} onClick={() => { window.location.href = "http://localhost:8080/files/" + file[0] }} >
-          <i class="fa fa-download" aria-hidden="true"></i>
+          <i className="fa fa-download" aria-hidden="true"></i>
         </button>
 
       </td>
       <td>
 
         <button className="btn btn-dark" style={{ marginLeft: "20%", marginRight: "20%" }} onClick={() => Contenu(file[0])} >
-          <i class="fa fa-file" aria-hidden="true"></i>
+          <i className="fa fa-file" aria-hidden="true"></i>
         </button>
 
       </td>

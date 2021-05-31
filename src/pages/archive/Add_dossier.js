@@ -46,6 +46,7 @@ export default function AddDossier() {
         privilege: "",
 
     })
+    console.log(data)
     function submit(e) {
         //const date =  new Date().toLocaleString();
         //console.log(date)
@@ -62,8 +63,9 @@ export default function AddDossier() {
             serie: data.serie,
             theme_titre: data.theme_titre,
             privilege: data.privilege,
+            
 
-        })
+        },config)
             .then(res => {
                 console.log(res.data)
                 history.push("/archive");
@@ -75,7 +77,7 @@ export default function AddDossier() {
         const newdata = { ...data }
         newdata[e.target.id] = e.target.value
         setData(newdata)
-        console.log(newdata)
+        //console.log(newdata)
     }
 
 
@@ -95,45 +97,45 @@ export default function AddDossier() {
                         <div className="row">
                             <div className="col">
                                 <label>cin</label>
-                                <input type="Number" className="form-control" placeholder=" First Name" aria-label="First name" onChange={(e) => handle(e)} id="cin" value={data.cin} />
+                                <input type="Number" className="form-control" placeholder=" CIN" required aria-label="First name" onChange={(e) => handle(e)} id="cin" value={data.cin} />
                             </div>
                             <div className="col">
                                 <label>matricule</label>
-                                <input type="text" className="form-control" placeholder="matricule" aria-label="matricule" onChange={(e) => handle(e)} id="matricule" value={data.matricule} />
+                                <input type="text" className="form-control" placeholder="matricule" required aria-label="matricule" onChange={(e) => handle(e)} id="matricule" value={data.matricule} />
                             </div>
                         </div>
                         <br></br>
                         <div className="row">
                             <div className="col">
                                 <label>motdeCle</label>
-                                <input type="text" className="form-control" placeholder="motdeCle" aria-label="motdeCle" onChange={(e) => handle(e)} id="motdeCle" value={data.motdeCle} />
+                                <input type="text" className="form-control" placeholder="motdeCle" required aria-label="motdeCle" onChange={(e) => handle(e)} id="motdeCle" value={data.motdeCle} />
                             </div>
                             <div className="col">
                                 <label>nbrePieces</label>
-                                <input type="text" className="form-control" placeholder="nbrePieces " aria-label="nbrePieces" onChange={(e) => handle(e)} id="nbrePieces" value={data.nbrePieces} />
+                                <input type="text" className="form-control" placeholder="nbrePieces " required aria-label="nbrePieces" onChange={(e) => handle(e)} id="nbrePieces" value={data.nbrePieces} />
                             </div>
                         </div>
                         <div className="row">
                             <div className="col">
                                 <label> numDoss</label>
-                                <input type="text" className="form-control" placeholder="numDoss" aria-label="numDoss" onChange={(e) => handle(e)} id="numDoss" value={data.numDoss} />
+                                <input type="text" className="form-control" placeholder="numDoss" required aria-label="numDoss" onChange={(e) => handle(e)} id="numDoss" value={data.numDoss} />
                             </div>
                             <div className="col">
                                 <label>  serie   </label>
-                                <input type="text" className="form-control" placeholder=" serie " aria-label="numDoss" onChange={(e) => handle(e)} id=" serie " value={data.serie} />
+                                <input type="text" className="form-control" placeholder=" serie" required aria-label="serie" onChange={(e) => handle(e)} id="serie" value={data.serie} />
                             </div>
                         </div>
                         <div className="row">
                             <div className="col">
                                 <label> theme_titre</label>
-                                <input type="text" className="form-control" placeholder="theme_titre" aria-label="theme_titre" onChange={(e) => handle(e)} id="theme_titre" value={data.theme_titre} />
+                                <input type="text" className="form-control" placeholder="theme_titre" required aria-label="theme_titre" onChange={(e) => handle(e)} id="theme_titre" value={data.theme_titre} />
                             </div>
                             <div className="col">
 
 
                                 <label>Role</label>
 
-                                <select className="form-control" onChange={(e) => handle(e)} id="privilege" value={data.privilege}>
+                                <select className="form-control" required onChange={(e) => handle(e)} id="privilege" value={data.privilege}>
                                     <option value="public" >public</option>
                                     <option value="prive"> prive</option>
                                 </select>

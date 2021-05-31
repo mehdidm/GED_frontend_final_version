@@ -36,7 +36,7 @@ import React from "react";
 
 export const AppContext = React.createContext();
 
-function App() {
+const App = (props) => {
   return (
     <Router>
 
@@ -76,7 +76,7 @@ function App() {
                 <Route path="/FichierGroupe" component={FichierGroupe} />
                 <Route path="/ListeVersions" component={ListeVersions} />
                 <Route path="/GroupeUsers" component={GroupeUsers} />
-                <Route path="/Chat" component={Chat} />
+                <Route exact path="/chat" render={(props) => <Chat {...props} />} />
            
               </>
 

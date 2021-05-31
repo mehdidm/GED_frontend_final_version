@@ -61,6 +61,6 @@
     ]
   },
   "devDependencies": {
-    "recoil-persist": "^2.9.0"
+    "recoil-persist": "^0.6.0"
   }
 }

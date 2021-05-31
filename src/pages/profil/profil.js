@@ -127,7 +127,7 @@ export default function Profil() {
                             </label>
                             <button className="btn btn-primary " onClick={() => {
                               uploadImage()
-                            }}><i class="fas fa-upload"></i> </button>
+                            }}><i className="fas fa-upload"></i> </button>
                           </div>
                       <div className="mt-3">
                         <h4>{UserName.firstName} {UserName.lastName} </h4>

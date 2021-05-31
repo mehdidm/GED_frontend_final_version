@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, message } from "antd";
+import axios from "axios";
 import {
   getUsers,
   countNewMessages,
@@ -14,17 +15,42 @@ import {
 } from "../../atom/globalState";
 import ScrollToBottom from "react-scroll-to-bottom";
 import "./Chat.css";
-
+import AuthService from "../../services/auth"
 var stompClient = null;
 const Chat = (props) => {
+  const [UserName, setUsername] = useState([]);
+
+  const id = AuthService.getCurrentUser();
   const currentUser = useRecoilValue(loggedInUser);
   const [text, setText] = useState("");
   const [contacts, setContacts] = useState([]);
   const [activeContact, setActiveContact] = useRecoilState(chatActiveContact);
   const [messages, setMessages] = useRecoilState(chatMessages);
-
+  
+  const config = {
+    headers: {
+      Authorization: 'Bearer ' + localStorage.getItem('token')
+    }
+  }
   useEffect(() => {
-    if (localStorage.getItem("accessToken") === null) {
+    const getCurrentUse = () => {
+
+
+      axios.get('user/' + id, config).then(
+        res => {
+          //console.log(res);
+          setUsername(res.data)
+        },
+        err => {
+          console.log(err)
+        }
+      )
+    }
+    getCurrentUse()
+  }, [])
+  
+  useEffect(() => {
+    if (localStorage.getItem("token") === null) {
       props.history.push("/login");
     }
     connect();
@@ -38,6 +64,7 @@ const Chat = (props) => {
     );
     loadContacts();
   }, [activeContact]);
+  
 
   const connect = () => {
     const Stomp = require("stompjs");
@@ -47,10 +74,10 @@ const Chat = (props) => {
     
     stompClient.connect({}, onConnected, onError);
   };
+  console.log(currentUser);
 
   const onConnected = () => {
     console.log("connected");
-    console.log(currentUser);
     stompClient.subscribe(
       "/user/" + currentUser.id + "/queue/messages",
       onMessageReceived
@@ -59,6 +86,7 @@ const Chat = (props) => {
 
   const onError = (err) => {
     console.log(err);
+    
   };
 
   const onMessageReceived = (msg) => {
@@ -89,7 +117,7 @@ const Chat = (props) => {
         content: msg,
         timestamp: new Date(),
       };
-      stompClient.send("/app/chat", {}, JSON.stringify(message));
+      stompClient.send("/chat", {}, JSON.stringify(message));
 
       const newMessages = [...messages];
       newMessages.push(message);
@@ -121,27 +149,29 @@ const Chat = (props) => {
     <div id="frame">
       <div id="sidepanel">
         <div id="profile">
-          <div class="wrap">
+          <div className="wrap">
+            
             <img
               id="profile-img"
-              src={currentUser.profilePicture}
-              class="online"
+             // src={currentUser.profilePicture}
+              src={`data:image/jpeg;base64,${currentUser.image}`}
+              className="online"
               alt=""
             />
-            <p>{currentUser.name}</p>
+            <p>{currentUser.firstName} {currentUser.lastName}</p>
             <div id="status-options">
               <ul>
-                <li id="status-online" class="active">
-                  <span class="status-circle"></span> <p>Online</p>
+                <li id="status-online" className="active">
+                  <span className="status-circle"></span> <p>Online</p>
                 </li>
                 <li id="status-away">
-                  <span class="status-circle"></span> <p>Away</p>
+                  <span className="status-circle"></span> <p>Away</p>
                 </li>
                 <li id="status-busy">
-                  <span class="status-circle"></span> <p>Busy</p>
+                  <span className="status-circle"></span> <p>Busy</p>
                 </li>
                 <li id="status-offline">
-                  <span class="status-circle"></span> <p>Offline</p>
+                  <span className="status-circle"></span> <p>Offline</p>
                 </li>
               </ul>
             </div>
@@ -150,23 +180,26 @@ const Chat = (props) => {
         <div id="search" />
         <div id="contacts">
           <ul>
+         
             {contacts.map((contact) => (
+              
               <li
                 onClick={() => setActiveContact(contact)}
-                class={
+                className={
                   activeContact && contact.id === activeContact.id
                     ? "contact active"
                     : "contact"
                 }
               >
-                <div class="wrap">
-                  <span class="contact-status online"></span>
-                  <img id={contact.id} src={contact.profilePicture} alt="" />
-                  <div class="meta">
-                    <p class="name">{contact.name}</p>
+              
+                <div className="wrap">
+                  <span className="contact-status online"></span>
+                  <img id={contact.id} src={`data:image/jpeg;base64,${contact.image}`} alt="" />
+                  <div className="meta">
+                    <p className="name">{contact.firstName} {contact.lastName}</p>
                     {contact.newMessages !== undefined &&
                       contact.newMessages > 0 && (
-                        <p class="preview">
+                        <p className="preview">
                           {contact.newMessages} new messages
                         </p>
                       )}
@@ -178,24 +211,24 @@ const Chat = (props) => {
         </div>
         <div id="bottom-bar">
           <button id="addcontact">
-            <i class="fa fa-user fa-fw" aria-hidden="true"></i>{" "}
+            <i className="fa fa-user fa-fw" aria-hidden="true"></i>{" "}
             <span>Profile</span>
           </button>
           <button id="settings">
-            <i class="fa fa-cog fa-fw" aria-hidden="true"></i>{" "}
+            <i className="fa fa-cog fa-fw" aria-hidden="true"></i>{" "}
             <span>Settings</span>
           </button>
         </div>
       </div>
-      <div class="content">
-        <div class="contact-profile">
+      <div className="content">
+        <div className="contact-profile">
           <img src={activeContact && activeContact.profilePicture} alt="" />
           <p>{activeContact && activeContact.name}</p>
         </div>
         <ScrollToBottom className="messages">
           <ul>
             {messages.map((msg) => (
-              <li class={msg.senderId === currentUser.id ? "sent" : "replies"}>
+              <li className={msg.senderId === currentUser.id ? "sent" : "replies"}>
                 {msg.senderId !== currentUser.id && (
                   <img src={activeContact.profilePicture} alt="" />
                 )}
@@ -204,8 +237,8 @@ const Chat = (props) => {
             ))}
           </ul>
         </ScrollToBottom>
-        <div class="message-input">
-          <div class="wrap">
+        <div className="message-input">
+          <div className="wrap">
             <input
               name="user_input"
               size="large"
@@ -221,7 +254,7 @@ const Chat = (props) => {
             />
 
             <Button
-              icon={<i class="fa fa-paper-plane" aria-hidden="true"></i>}
+              icon={<i className="fa fa-paper-plane" aria-hidden="true"></i>}
               onClick={() => {
                 sendMessage(text);
                 setText("");

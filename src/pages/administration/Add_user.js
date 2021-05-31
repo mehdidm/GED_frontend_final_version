@@ -12,9 +12,14 @@ export default function AddUser() {
         password: "",
         appUserRole: ""
     })
+    const config = {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }
     function submit(e) {
         e.preventDefault();
-        axios.post('ajoutUser', {
+        axios.post('ajoutUser',config, {
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
