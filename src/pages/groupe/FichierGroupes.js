@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, Component } from 'react';
 import axios from "axios";
 import AuthService from "../../services/auth"
 import doc from "../../assets/doc.png";
+import { NotificationManager } from 'react-notifications';
 import { useHistory, useLocation, Link } from "react-router-dom"
 export default function FichierGroupe() {
 
@@ -45,8 +46,9 @@ export default function FichierGroupe() {
               <th>Type</th>
               <th>Taille de fichier</th>
               <th>date de création</th>
-              <th>Télécharger</th>
-              <th>Versions</th>
+              <th>Heure de création</th>
+              <th></th>
+              <th></th>
 
             </tr>
           </thead>
@@ -76,13 +78,13 @@ export function RenderFiles(file, index) {
 
     console.log(num)
     history.push({
-        pathname: '/ListeVersions/' + num,
-        state: {  // location state
-            num: num,
-        },
+      pathname: '/ListeVersions/' + num,
+      state: {  // location state
+        num: num,
+      },
     })
   }
-  
+
   return (
     <tr key={index}>
       <td>    <img className="card-img-top" src={doc} alt="Card image cap" style={{ width: "2rem", margin: "auto" }} />
@@ -91,22 +93,27 @@ export function RenderFiles(file, index) {
       <td>{file[6]} {file[7]} </td>
       <td>{file[2]}</td>
       <td>{file[3]}</td>
-      <td>{file[4]}</td>
-
-
-
+      <td>{file[4].slice(0, [10])}</td>
+      <td>{file[4].slice(11, [19])}</td>
+     
+     
 
 
       <td>
 
-        <button className="btn btn-dark" style={{ marginLeft: "20%", marginRight: "20%" }} onClick={() => { window.location.href = "http://localhost:8080/files/" + file[0] }} >
-          <i class="fa fa-download" aria-hidden="true"></i>
+        <button className="btn btn-dark" onClick={() => { window.location.href = "http://localhost:8080/files/viewFile/" + file[0] }} >
+          <i className="fas fa-eye"></i>
+        </button>
+      </td>
+      <td>
+        <button className="btn btn-dark"  onClick={() => { window.location.href = "http://localhost:8080/files/" + file[0] }} >
+          <i className="fa fa-download" aria-hidden="true"></i>
         </button>
       </td>
       <td>
 
-        <button className="btn btn-dark" style={{ marginLeft: "20%", marginRight: "20%" }} onClick={() => Contenu(file[0])} >
-          <i class="fa fa-file" aria-hidden="true"></i>
+        <button className="btn btn-dark"  onClick={() => Contenu(file[0])} >
+          <i className="fas fa-code-branch"></i>
         </button>
 
       </td>
@@ -172,13 +179,15 @@ export function MyDropzone_file() {
 
 
     ).then(() => {
-      console.log("file uploaded successfully")
-      alert('fichier ajouter')
-      window.location.reload(false)
+      NotificationManager.success( "Fichier ajouter avec succés" ,"success",2000 );
+      setTimeout(function(){
+        window.location.reload(false);
+        
+     }, 2500);
     }
 
     ).catch(er => {
-      console.log(er);
+      NotificationManager.error("Verifier vos données", 'Error!');
     });
 
   }, [])

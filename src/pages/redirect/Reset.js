@@ -1,58 +1,96 @@
+
 import axios from "axios";
-import { Component } from "react";
-import { Container } from "react-bootstrap";
-
-
-export default class Reset extends Component{
+import React, { useState, useEffect, useCallback, Component } from 'react';
+import { Container, Dropdown } from "react-bootstrap";
+import Dossier from '../../assets/equipe.png'
+import AuthService from "../../services/auth"
+import Card from "react-bootstrap/Card";
+import { useHistory, useLocation, Link } from "react-router-dom";
+import 'react-notifications/lib/notifications.css';
+import { NotificationManager } from 'react-notifications';
+export default function Reset() {
+  const history = useHistory();
   
-    handleSubmit = e =>{
-        e.preventDefault();
-        const path= localStorage.getItem('password')
-        console.log(path)
-        const data ={
-          
-            password:this.password,
-            
-        }
-        axios.put('reset-password/'+ path, data)
-        
-        .then(res => {
-        
-            
-            
-            console.log(res)
-           if (res.status===200) {
-            alert('succes')
-          this.props.history.push("/");
-            
-           }
-          
-        })
-        .catch(err =>{
-            alert(err)
-        })
-    };
-  
- 
-    render(){
-        return(
-         <Container style={{marginTop: 10 + 'em'}}>
-              <form onSubmit={this.handelforgot}> 
-            <h3>Reset Password</h3>
-            <div className="form-group">
-                <label>Password1</label>
-                <input type="password" className="form-control" placeholder="Password" onChange={e =>this.password = e.target.value}/>
-         </div>
-       
-          
-            <button className="btn btn-primary btn-block">Reset</button>
-            
-            </form>
-            
-         </Container>
-          
-        )
-    }
-
-
+  const config = {
+      headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
       }
+  }
+  
+
+ 
+
+  const [data, setData] = useState({
+      password: "",
+  
+
+  })
+  const  token =useLocation().search;
+  //console.log (token)
+  function submit(e) {
+    
+      e.preventDefault();
+      axios.put('reset-password'+token, {
+
+          password: data.password,
+      
+
+      })
+          .then(res => {
+              console.log(res.data)
+              NotificationManager.success( "Mot de passe modifier" ,"succés",2000 );
+              history.push("/login");
+          
+
+          })
+          .catch(err => {
+              NotificationManager.error("Verifier vos données", 'Error!');
+  
+             
+          })
+  }
+  function handle(e) {
+      const newdata = { ...data }
+      newdata[e.target.id] = e.target.value
+      setData(newdata)
+      console.log(newdata)
+  }
+
+  return (
+    <div className="groupCard">
+        <Card>
+            <div className="main__title">
+                <img src={Dossier} alt="hello" style={{ width: "10" }} />
+                <div className="main__greeting">
+                </div>
+            </div>
+            <Container >
+                <form onSubmit={(e) => submit(e)}>
+                    <h1>Changer mot de passe</h1>
+                    <br></br>
+
+                    <div className="row">
+                        <div className="col">
+                            <label>Mot de passe</label>
+                            <input type="password" required className="form-control" placeholder=" saisie mot de passe" aria-label="password" onChange={(e) => handle(e)} id="password" value={data.password} />
+                        </div>
+                       
+                    </div>
+                    <br></br>
+                
+                    <button className="btn btn-info btn-block">Modifier</button>
+                </form>
+
+            </Container>
+            <div className="go-left" >
+            <div className="go-ar">
+            <i className="fas fa-folder-plus fa-lg"></i>
+         </div>
+          </div>
+        </Card>
+        
+    </div>
+
+
+)
+  }

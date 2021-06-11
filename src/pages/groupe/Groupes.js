@@ -1,13 +1,16 @@
 
 import axios from "axios";
 import equipe from "../../assets/equipe.png"
+import"./Groupe.css";
+import Popup from "../../components/popup/PopUp";
 import React, { useState, useEffect, useCallback } from 'react';
-
+import { NotificationManager } from 'react-notifications';
 import ReactPaginate from "react-paginate";
 import { useHistory , Link} from "react-router-dom"
 
 
  export default function Groupes (){
+  
      
   const config = {
     headers: {
@@ -22,6 +25,7 @@ import { useHistory , Link} from "react-router-dom"
   const pageCount = Math.ceil(groupes.length / archivePerPage);
   const changePage = ({ selected }) => { setPageNumber(selected); };
   const history = useHistory();
+  const  history_GroupeId = useHistory();
   useEffect(() => {
     axios.get(`groupes`)
       .then(res => {
@@ -54,6 +58,38 @@ import { useHistory , Link} from "react-router-dom"
         },})
   }
     //function to send num° dossier to archive_contenu page//
+    
+
+    //Delete group
+    function deleteGroupe(id) {
+      
+
+      if (window.confirm('Etes vous sur de vouloir supprimer cet utilisateur?')) {
+          axios.delete(`groupe/${id}`, config)
+              .then(res => {
+                  console.log(res.data)
+                  // window.location.reload(false)
+                  NotificationManager.error('Groupe supprimé avec succés ', 'Supprimé!',2000);
+                  setTimeout(function () {
+                      window.location.reload(false);
+                  }, 2100);
+                  
+
+              })
+              .catch(err => {
+                  console.log(err)
+              })
+      }
+  }
+  //Send id GROUP TO Update group
+  function ContenuGroupe(id) {
+    history_GroupeId.push({
+      pathname: '/UpdateGroupe',
+      state: {  // location state
+        id: id,
+      },
+    })
+  }
   const displayArchive = groupes
   .slice(pagesVisited, pagesVisited + archivePerPage)
   .filter((val)=>{
@@ -80,12 +116,19 @@ import { useHistory , Link} from "react-router-dom"
           <p >Membres du groupes: {groupe.users_groupes.length}</p>
          
           <div className="row" style={{margin:"auto"}} >
-          <button className="btn btn-info" onClick={() =>Contenu(groupe.id)}  style={{margin:"auto"}}> <i className="fa fa-file" aria-hidden="true"></i> </button>
-          <button className="btn btn-info" onClick={() =>Users(groupe.id)} style={{margin:"auto"}}><i className="fa fa-edit" aria-hidden="true"></i> </button>
+          <button className="btn btn-info" onClick={() =>Contenu(groupe.id)}  style={{margin:"auto"}}><i className="fas fa-file-alt"></i> </button>
+          
+          <button className="btn btn-info"  onClick={() =>ContenuGroupe(groupe.id)}  style={{margin:"auto"}}><i className="fas fa-pencil-alt"></i></button>
+          
           <button className="btn btn-info" onClick={() =>Users(groupe.id)} style={{margin:"auto"}}><i className="fa fa-user" aria-hidden="true"></i> </button>
     
         </div>
         </div>
+        <div className="go-up" >
+                <div className="go-close">
+                <i onClick={() =>deleteGroupe(groupe.id)}  className="far fa-trash-alt"></i>
+             </div>
+              </div>
       </div>
     )
   });
@@ -125,6 +168,7 @@ import { useHistory , Link} from "react-router-dom"
             activeClassName={"paginationActive"}
           />
         </div>
+      
       </div>
      )
 

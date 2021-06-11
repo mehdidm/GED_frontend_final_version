@@ -5,7 +5,8 @@ import { useHistory, useLocation, Link } from "react-router-dom"
 import ReactPaginate from "react-paginate";
 import * as ReactBootstrap from "react-bootstrap";
 import document from "../../assets/history.png"
-
+import 'react-notifications/lib/notifications.css';
+import { NotificationManager } from 'react-notifications';
 export default function ListeVersions(params) {
     const [files, setfiles] = useState([]);
     const history = useHistory();
@@ -49,7 +50,13 @@ export default function ListeVersions(params) {
                         <p >Heure : {file[4].slice(11, [19])}</p>
 
                         <p >Taille :{file[3]}</p>
-                        <button className="btn btn-primary" onClick={() => { window.location.href = "http://localhost:8080/files/versions/" + file[0] }}>Télécharger</button>
+                        <div className="d-flex justify-content-between" >
+                        <button className="btn btn-info" onClick={() => { window.location.href = "http://localhost:8080/files/versions/viewVersion/" + file[0] }} >
+                               <i className="fas fa-eye"></i>
+                  
+                        </button>
+                        <button className="btn btn-info" onClick={() => { window.location.href = "http://localhost:8080/files/versions/" + file[0] }}> <i className="fas fa-download"></i></button>
+                   </div>
                     </div>
                 </div>
 
@@ -155,12 +162,15 @@ export function MyDropzone_file() {
 
         ).then(() => {
             console.log("file uploaded successfully")
-            alert('fichier ajouter')
-            window.location.reload(false)
+            NotificationManager.success( "Version ajouter avec succés" ,"Succés",2000 );
+            setTimeout(function(){
+                window.location.reload(false);
+             }, 2500);
         }
 
         ).catch(er => {
             console.log(er);
+            NotificationManager.error("Vérifier votre fichier", 'Error!');
         });
 
     }, [])

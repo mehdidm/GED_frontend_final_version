@@ -14,9 +14,9 @@ import { NavLink } from 'react-router-dom';
 const Sidebar = () => {
   return (
     <div
-      style={{ display: 'grid', height: '100vh' }}
+      style={{ display: 'grid', height: '100vh'}}
     >
-      <CDBSidebar textColor="#fff" backgroundColor="#333">
+      <CDBSidebar  textColor="#fff" backgroundColor="#333">
         <img src={logo} alt="logo" style={{ width: "80px", padding: "8px" }} />
         <CDBSidebarHeader prefix={<i className="fa fa-bars fa-large"></i>}>
 
@@ -61,6 +61,13 @@ const Sidebar = () => {
                 Groupes
                 </CDBSidebarMenuItem>
             </NavLink>
+            <NavLink exact to="/Tasks" activeClassName="activeClicked">
+              <CDBSidebarMenuItem >
+              <i className="fas fa-tasks" style={{marginRight:"10px"}}></i>
+              Tâches
+                </CDBSidebarMenuItem>
+            </NavLink>
+
 
             <NavLink
               exact

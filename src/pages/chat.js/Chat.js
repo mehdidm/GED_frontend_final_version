@@ -26,7 +26,7 @@ const Chat = (props) => {
   const [contacts, setContacts] = useState([]);
   const [activeContact, setActiveContact] = useRecoilState(chatActiveContact);
   const [messages, setMessages] = useRecoilState(chatMessages);
-  
+
   const config = {
     headers: {
       Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -74,7 +74,7 @@ const Chat = (props) => {
     
     stompClient.connect({}, onConnected, onError);
   };
-  console.log(currentUser);
+  
 
   const onConnected = () => {
     console.log("connected");
@@ -88,7 +88,9 @@ const Chat = (props) => {
     console.log(err);
     
   };
-
+  console.log(currentUser);
+  console.log(chatActiveContact);
+  console.log(chatMessages);
   const onMessageReceived = (msg) => {
     const notification = JSON.parse(msg.body);
     const active = JSON.parse(sessionStorage.getItem("recoil-persist"))
@@ -117,18 +119,21 @@ const Chat = (props) => {
         content: msg,
         timestamp: new Date(),
       };
-      stompClient.send("/chat", {}, JSON.stringify(message));
+      stompClient.send("/app/chat", {}, JSON.stringify(message));
 
       const newMessages = [...messages];
       newMessages.push(message);
       setMessages(newMessages);
     }
   };
-
+ 
   const loadContacts = () => {
+    
     const promise = getUsers().then((users) =>
+    
       users.map((contact) =>
         countNewMessages(contact.id, currentUser.id).then((count) => {
+    
           contact.newMessages = count;
           return contact;
         })

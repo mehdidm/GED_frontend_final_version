@@ -34,9 +34,9 @@ export default class Redirect_email extends Component{
         return(
          <Container style={{marginTop: 10 + 'em'}}>
               <form onSubmit={this.handelforgot}> 
-            <h3>Reset Password</h3>
+            <h3>Saisir votre email</h3>
             <div className="form-group">
-                <label>Usernamee</label>
+                <label>Email</label>
                 <input type="email" className="form-control" placeholder="Email" onChange={e =>this.username = e.target.value}/>
                 
             </div>

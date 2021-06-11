@@ -68,7 +68,7 @@ export default function GoupeUsers() {
             <p >Num°: {user.numtel}  </p>
             <p >Email : {user.email}</p>
             <p >Role : {user.appUserRole}</p>
-            <button className="btn btn-primary" >Télécharger</button>
+            
           </div>
         </div>
       )

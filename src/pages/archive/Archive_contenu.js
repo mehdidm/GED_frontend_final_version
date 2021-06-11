@@ -2,11 +2,12 @@
 import { useDropzone } from 'react-dropzone';
 import React, { useState, useEffect, useCallback, Component } from 'react';
 import axios from "axios";
-import { useHistory, useLocation , Link} from "react-router-dom"
+import { useHistory, useLocation, Link } from "react-router-dom"
 import ReactPaginate from "react-paginate";
 import * as ReactBootstrap from "react-bootstrap";
 import document from "../../assets/doc.png"
-
+import 'react-notifications/lib/notifications.css';
+import { NotificationManager } from 'react-notifications';
 
 export default function Archive_Contenu() {
   const [files, setfiles] = useState([]);
@@ -20,9 +21,8 @@ export default function Archive_Contenu() {
   const [searchTerm, setSearchTerm] = useState('')
   const pageCount = Math.ceil(files.length / documentPerPage);
   const changePage = ({ selected }) => { setPageNumber(selected); };
-
-
-
+  
+ 
   useEffect(() => {
     axios.get(`/archive/contenu/${num}`)
       .then(res => {
@@ -45,15 +45,37 @@ export default function Archive_Contenu() {
           <img className="card-img-top" src={document} alt="Card image cap" style={{ width: "5rem", margin: "auto" }} />
           <div className="card-body">
             <p >Nom fichier :{file[1]}</p>
-            <p >Date de création :{file[2]}</p>
+            <p >Heure : {file[2].slice(11, [19])}</p>
+            <p >Date de création : { file[2].slice(0, [10])}</p>
             <p >Taille :{file[3]}</p>
-            <button className="btn btn-primary" onClick={() => { window.location.href = "http://localhost:8080/files/" + file[0] }}>Télécharger</button>
+            <div className="d-flex justify-content-between" >
+              <button className="btn btn-primary" onClick={() => { window.location.href = "http://localhost:8080/files/" + file[0] }}>
+                <i className="fa fa-download"></i></button>
+              <button className="btn btn-info" onClick={() => { window.location.href = "http://localhost:8080/files/viewFile/" + file[0] }} >
+                <i className="fas fa-eye"></i>
+
+              </button>
+              <button className="btn btn-info" onClick={() =>Contenu(file[0])} >
+                        <i className="fas fa-code-branch"></i>
+                  
+                        </button>
+            </div>
           </div>
         </div>
       )
     });
 
-
+    function Contenu(num) {
+      const history = useHistory();
+      console.log(num)
+      history.push({
+          pathname: '/ListeVersions/' + num,
+          state: {  // location state
+              num: num,
+          },
+      })
+    }
+  
 
 
   return (
@@ -62,18 +84,18 @@ export default function Archive_Contenu() {
       <h5 className="title_archive">Nombre totale de fichiers ({files.length})</h5>
       <hr />
       <div className="row" >
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Rechercher ..."
-        style={{ width: "30%" }}
-        onChange={event => {
-          setSearchTerm(event.target.value)
-        }} />
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Rechercher ..."
+          style={{ width: "30%" }}
+          onChange={event => {
+            setSearchTerm(event.target.value)
+          }} />
         <div style={{ marginLeft: "40%" }}>
-        <MyDropzone_file ></MyDropzone_file>
+          <MyDropzone_file ></MyDropzone_file>
         </div>
-    
+
       </div>
 
       <div className="row" style={{ margin: "auto" }}>
@@ -110,25 +132,29 @@ export function MyDropzone_file() {
     const file = acceptedFiles[0];
     console.log(file);
     const id = localStorage.getItem('id');
-    
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("user", id);
-  
+
 
 
     console.log(file);
-    axios.post(`/archive/files/${num}`, formData, config
+    axios.post(`/archive/files/${num}`, formData,
 
 
     ).then(() => {
       console.log("file uploaded successfully")
-      alert('fichier ajouter')
-      window.location.reload(false)
+      NotificationManager.success( "Fichier ajouter avec succés" ,"success",2000 );
+      setTimeout(function(){
+        window.location.reload(false);
+     }, 2500);
+     
     }
 
     ).catch(er => {
       console.log(er);
+      NotificationManager.warning( "Error 404" ,"Attention",2000 );
     });
 
   }, [])
@@ -146,4 +172,4 @@ export function MyDropzone_file() {
       }
     </div>
   )
-    }
+}

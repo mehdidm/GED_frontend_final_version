@@ -4,6 +4,9 @@ import { Container, Dropdown } from "react-bootstrap";
 import Dossier from '../../assets/dossier.png'
 import AuthService from "../../services/auth"
 import { useHistory } from "react-router-dom"
+import 'react-notifications/lib/notifications.css';
+import { NotificationManager } from 'react-notifications';
+import Card from "react-bootstrap/Card";
 export default function AddDossier() {
     const history = useHistory();
   
@@ -67,10 +70,18 @@ export default function AddDossier() {
 
         },config)
             .then(res => {
-                console.log(res.data)
+              //  console.log(res.data)
+                NotificationManager.success( "Dossier ajouter avec succés" ,"success",2000 );
                 history.push("/archive");
-                window.location.reload(false)
+                
+             
+               
 
+            })
+            .catch(err => {
+                NotificationManager.error("Verifier vos données", 'Error!');
+    
+               
             })
     }
     function handle(e) {
@@ -82,16 +93,17 @@ export default function AddDossier() {
 
 
     return (
-        <main>
-            <div className="main__container">
+        
+            <div className="groupCard">
+                <Card>
                 <div className="main__title">
-                    <img src={Dossier} alt="hello" style={{ width: "10" }} />
+                    <img src={Dossier} alt="hello" style={{ width: "10%" }} />
                     <div className="main__greeting">
                     </div>
                 </div>
                 <Container >
                     <form onSubmit={(e) => submit(e)}>
-                        <h1>Ajouter Utilisateur</h1>
+                        <h1>Ajouter Boite d'archive</h1>
                         <br></br>
 
                         <div className="row">
@@ -145,12 +157,14 @@ export default function AddDossier() {
                         </div>
 
                         <br></br>
-                        <button className="btn btn-primary btn-block">Login</button>
+                        <button className="btn btn-info btn-block">Créer</button>
                     </form>
 
                 </Container>
+                </Card>
+              
             </div>
-        </main>
+        
 
 
     )

@@ -1,10 +1,12 @@
 import "./Archive.css";
 import axios from "axios";
-import archiver from "../../assets/archiver.png"
+import archiver from "../../assets/archiver.png";
 import React, { useState, useEffect, useCallback } from 'react';
-
+import Popup from "../../components/popup/PopUp";
 import ReactPaginate from "react-paginate";
-import { useHistory, Link } from "react-router-dom"
+import file from "../../assets/file.png"
+import { useHistory, Link } from "react-router-dom";
+import folders from "../../assets/folders.png"
 
 function Archive() {
 
@@ -21,6 +23,7 @@ function Archive() {
   const pageCount = Math.ceil(archives.length / archivePerPage);
   const changePage = ({ selected }) => { setPageNumber(selected); };
   const history = useHistory();
+  const [buttonPopup, setButtonPopup] = useState(false);
 
   useEffect(() => {
     axios.get(`archive`, config)
@@ -65,24 +68,44 @@ function Archive() {
           <div className="card-body">
             <h5 className="card-title">{archive[1]}</h5>
             <p >Nom Personnel : {archive[7]}</p>
-            <p >Serie: {archive[8]}</p>
-            <p >Num° Dossier: {archive[0]}</p>
-            <p >Matricule: {archive[4]}</p>
-            <p >Date : {archive[2].slice(0, [10])}</p>
-            <p >Heure : {archive[2].slice(11, [19])}</p>
-            <p >Nombre pieces: {archive[6]}</p>
+            <div className="d-flex justify-content-around">
+            <button className="btn btn-info" onClick={() => Contenu(archive[0])}><i className="fas fa-file-alt"></i> Fichiers</button>
+            <div></div>
+            <button className="btn btn-info" onClick={() => setButtonPopup(true)}><i className="fas fa-info"></i> Details</button>
 
-            <button className="btn btn-primary" onClick={() => Contenu(archive[0])}>Consulter les fichiers</button>
+            </div>
+          
+            <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
+              <div className="row">
+                <h3 style={{marginLeft:"5%"}}>Détails</h3>
+              </div>
+              <hr></hr>
+              <div className="d-flex justify-content-around">
+                <div style={{ textAlign: "justify" }}>
+                  <p ><span>Serie :</span> {archive[8]}</p>
+                  <p ><span>Num° Boite:</span> {archive[0]}</p>
+                  <p ><span>Matricule: </span>{archive[4]}</p>
+                  <p ><span>Date : </span>{archive[2].slice(0, [10])}</p>
+                  <p ><span>Heure : </span>{archive[2].slice(11, [19])}</p>
+                  <p ><span>Nombre pieces :</span> {archive[6]}</p>
+                </div>
+     <img style={{width:"20%", height:"30%",margin:"10%"}} src={folders}/>
+              </div>
+
+
+
+            </Popup>
           </div>
         </div>
       )
     });
 
+
   return (
 
     <div className="container">
       <h1 className="title_archive">-Archive-</h1>
-      <h5 className="title_archive">Nombre totale de dossiers ({archives.length})</h5>
+      <h5 className="title_archive">Nombre totale de boites d'archives ({archives.length})</h5>
 
 
       <hr />
@@ -96,33 +119,12 @@ function Archive() {
             setSearchTerm(event.target.value)
           }} />
         <Link to='/addDossier' style={{ marginLeft: "40%" }}>
-          <button className="btn btn-dark">  <i className="fa fa-plus-circle"></i> Ajouter dossier</button>
+          <button className="btn btn-dark">  <i className="fa fa-plus-circle"></i> Ajouter Boite</button>
 
         </Link>
       </div>
 
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Launch demo modal
-</button>
 
-
-      <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">Modal title</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div className="modal-body">
-              ...
-      </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-          </div>
-        </div>
-      </div>
       <div className="row" style={{ margin: "auto" }}>
 
         {displayArchive}

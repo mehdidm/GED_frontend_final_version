@@ -3,7 +3,8 @@ import './Admin.css'
 import axios from "axios";
 import Users from '../../components/dataTable/users';
 
-
+import ReactNotification , {store} from 'react-notifications-component'
+import 'react-notifications-component/dist/theme.css'
 
 
 
@@ -22,6 +23,7 @@ export default function Admin() {
         <div>
            
             <div>
+           
                 <Users></Users>
 
             </div>

@@ -2,8 +2,12 @@ import axios from "axios";
 import { Component } from "react";
 import { Container } from "react-bootstrap";
 import logo from "../../assets/avatar1.png"
+import logo1  from "../../assets/logo.png"
 import './login.css'
-
+import ReactNotification , {store} from 'react-notifications-component'
+// React Notification
+import 'react-notifications/lib/notifications.css';
+import { NotificationManager } from 'react-notifications';
 export default class Auth extends Component {
 
     handleSubmit = e => {
@@ -18,16 +22,24 @@ export default class Auth extends Component {
 
                 localStorage.setItem('token', res.data.token);
                 localStorage.setItem('id', res.data.id);
+                console.log(res.data)
+                
                 console.log(res)
                 if (res.status === 200) {
-
+                    NotificationManager.info( this.username, "Salut" ,2000 );
                     this.props.history.push("/");
-                    window.location.reload();
+                  
+                    setTimeout(function(){
+                        window.location.reload(false);
+                     }, 2500);
                 }
+                
 
             })
             .catch(err => {
-                alert(err)
+                NotificationManager.error('Verifier votre email ou mot de passe', 'Error!');
+    
+               
             })
     };
     handelforgot = e => {
@@ -61,8 +73,11 @@ export default class Auth extends Component {
 
             <div style={{ margin: "5% 20%" }}>
                 <div className="row main-content bg-success text-center">
+                    
                     <div className="col-md-4 text-center company__info">
-                        <span className="company__logo"><img src={logo} style={{ width: "80%" }}></img></span>
+                    <span className="company__logo"><img src={logo1} style={{ width: "30%" , marginBottom:"30%",marginRight:"60%" }}></img></span>
+                        <span className="company__logo"><img src={logo} style={{ width: "80%" ,}}></img></span>
+                        
                         <h4 className="company_title">Bienvenue !</h4>
                     </div>
                     <div className="col-md-8 col-xs-12 col-sm-12 login_form ">
@@ -98,4 +113,23 @@ export default class Auth extends Component {
     }
 
 
+}
+
+const handleOnClickDefault = () =>{
+    store.addNotification(
+        {
+            title:"Suppression",
+            message:"Utilisateur supprimer avec succés",
+            type: "danger",
+            container:"top-right",
+            insert:"top",
+            animationIn:["animated","fadeIn"],
+            animationOut:["animated","fadeOut"],
+            dismiss:{
+                duration:2000,
+                onScreen:true
+            },
+            width:600
+        }
+    )
 }

@@ -30,7 +30,12 @@ import GroupeUsers from './pages/groupe/GroupeUsers';
 import ListeVersions from './pages/fetching_files/ListeDesVersions';
 import Chat from './pages/chat.js/Chat';
 import React from "react";
-
+// React Notification
+import 'react-notifications/lib/notifications.css';
+import { NotificationContainer } from 'react-notifications';
+import Tasks from './pages/workflow/Tasks';
+import TaskUser from './pages/workflow/TaskUser';
+import UpdateGroupe from './pages/groupe/UpdateGroupe';
 
 
 
@@ -40,8 +45,8 @@ const App = (props) => {
   return (
     <Router>
 
-      <div id='Container'>
-        <div>
+      <div id='Container' >
+        <div  >
           {localStorage.getItem('token') ?
             <>
               <Sidebar></Sidebar>
@@ -59,36 +64,40 @@ const App = (props) => {
           <Switch>
             {localStorage.getItem('token') ?
               <>
-                <Route path="/" exact component={Home} />
-                <Route path="/files" component={Files} />
-                <Route path="/update" component={Update} />
-                <Route path="/archive" component={Archive} />
-                <Route path="/profile" component={Profil} />
-                <Route path="/addDossier" component={AddDossier} />
-                <Route path="/Administration" component={Admin} />
-                <Route path="/addUser" component={AddUser} />
-                <Route path="/groupes" component={Groupes} />
-                <Route path="/updateUser" component={UpdateUser} />
-                <Route path="/Archive_contenu" component={Archive_Contenu} />
-                <Route path="/AddGroupe" component={AddGroupe} />
-                <Route path="/MesFichiers" component={MesFichiers} />
-                <Route path="/FichiersPublics" component={FichiersPublics} />
-                <Route path="/FichierGroupe" component={FichierGroupe} />
-                <Route path="/ListeVersions" component={ListeVersions} />
-                <Route path="/GroupeUsers" component={GroupeUsers} />
+                <Route path="/" exact component={Home} exact />
+                <Route path="/files" component={Files} exact/>
+                <Route path="/update" component={Update}exact />
+                <Route path="/archive" component={Archive}  exact/>
+                <Route path="/profile" component={Profil} exact/>
+                <Route path="/addDossier" component={AddDossier} exact/>
+                <Route path="/Administration" component={Admin} exact/>
+                <Route path="/addUser" component={AddUser} exact/>
+                <Route path="/groupes" component={Groupes} exact/>
+                <Route path="/updateUser" component={UpdateUser} exact/>
+                <Route path="/Archive_contenu" component={Archive_Contenu} exact/>
+                <Route path="/AddGroupe" component={AddGroupe} exact/>
+                <Route path="/MesFichiers" component={MesFichiers} exact/>
+                <Route path="/FichiersPublics" component={FichiersPublics} exact/>
+                <Route path="/FichierGroupe" component={FichierGroupe} exact/>
+                <Route path="/ListeVersions" component={ListeVersions} exact/>
+                <Route path="/GroupeUsers" component={GroupeUsers} exact/>
                 <Route exact path="/chat" render={(props) => <Chat {...props} />} />
+                <Route exact path="/Tasks"  component={Tasks} exact />
+                <Route exact path="/TasksUser"  component={TaskUser} exact />
+                <Route exact path="/UpdateGroupe"  component={UpdateGroupe} exact/>
+                
            
               </>
 
               :
 
               <>
-                <Route path="/" exact component={Home} />
-                <Route path="/reset" component={Reset} />
-                <Route path="/login" component={Login} />
-                <Route path="/Redirict" component={Redirect} />
-                <Route path="/red_email" component={Redirect_email} />
-                <Route path="/log" component={log} />
+                <Route path="/" exact component={Home} exact/>
+                <Route path="/reset" component={Reset} exact/>
+                <Route path="/login" component={Login} exact/>
+                <Route path="/Redirict" component={Redirect} exact/>
+                <Route path="/red_email" component={Redirect_email} exact/>
+                <Route path="/log" component={log} exact/>
 
 
               </>
@@ -98,6 +107,7 @@ const App = (props) => {
 
           </Switch>
         </div>
+        <NotificationContainer />
       </div>
     </Router>
   );

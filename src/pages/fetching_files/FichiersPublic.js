@@ -8,7 +8,8 @@ import ReactPaginate from "react-paginate";
 import * as ReactBootstrap from "react-bootstrap"
 import { useHistory, useLocation , Link} from "react-router-dom"
 
-
+import 'react-notifications/lib/notifications.css';
+import { NotificationManager } from 'react-notifications';
 
 
 export default function FichiersPublics() {
@@ -79,16 +80,22 @@ export default function FichiersPublics() {
                         <p >Heure : {file[4].slice(11, [19])}</p>
                        
                         <p >Editeur : {file[6]} {file[7]}</p>
-                        <div className="row">
+                        <div className="d-flex justify-content-between" >
                             <button className="btn btn-info" onClick={() => { window.location.href = "http://localhost:8080/files/" + file[0] }} >
-                                <i className="fa fa-download" style={{ marginRight: "12px" }} aria-hidden="true"></i>
-                         Télécharger
+                                <i className="fa fa-download" aria-hidden="true"></i>
                         </button>
-                            <div style={{ width: "5px" }}></div>
-                               <button className="btn btn-info" onClick={() =>Contenu(file[0])} >
-                            <i className="fa fa-file" aria-hidden="true"></i>
+                            
+                               <button className="btn btn-info" onClick={() => { window.location.href = "http://localhost:8080/files/viewFile/" + file[0] }} >
+                               <i className="fas fa-eye"></i>
                   
                         </button>
+                        
+                        
+                        <button className="btn btn-info" onClick={() =>Contenu(file[0])} >
+                        <i className="fas fa-code-branch"></i>
+                  
+                        </button>
+                        
                         </div>
 
 
@@ -165,12 +172,15 @@ export function MyDropzone_file() {
   
       ).then(() => {
         console.log("file uploaded successfully")
-        alert('fichier ajouter')
-        window.location.reload(false)
+        NotificationManager.success( "Fichier ajouter avec succés" ,"succés",2000 );
+        setTimeout(function(){
+            window.location.reload(false);
+         }, 2500);
       }
   
       ).catch(er => {
         console.log(er);
+        NotificationManager.error("Vérifier votre fichier", 'Error!');
       });
   
     }, [])

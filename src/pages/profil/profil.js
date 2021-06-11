@@ -1,8 +1,8 @@
 
 import hello from "../../assets/avatar.png";
 
-import React, { useState, useEffect , Component } from 'react';
-import { useHistory , Link} from "react-router-dom"
+import React, { useState, useEffect, Component } from 'react';
+import { useHistory, Link } from "react-router-dom"
 import axios from "axios";
 
 import AuthService from "../../services/auth"
@@ -16,6 +16,7 @@ import "./profil.css";
 export default function Profil() {
 
   const [UserName, setUsername] = useState([]);
+  const [Groupe, setGroupes] = useState([]);
 
   const id = AuthService.getCurrentUser();
   // console.log(id)
@@ -32,6 +33,23 @@ export default function Profil() {
         res => {
           //console.log(res);
           setUsername(res.data)
+        },
+        err => {
+          console.log(err)
+        }
+      )
+    }
+    getCurrentUse()
+  }, [])
+  useEffect(() => {
+    const getCurrentUse = () => {
+
+
+      axios.get('userGroupes/' + id, config).then(
+        res => {
+          //console.log(res);
+          setGroupes(res.data)
+          console.log(res.data)
         },
         err => {
           console.log(err)
@@ -64,8 +82,8 @@ export default function Profil() {
       });
   }
 
-  console.log(UserName)
-  // console.log(UserName.image)
+  
+  // console.log(UserName.appUserRole)
 
   return (
     <main className="main1">
@@ -111,7 +129,7 @@ export default function Profil() {
                         <>
 
                           <img src={`data:image/jpeg;base64,${UserName.image}`} className="rounded-circle" />
-                         
+
 
 
                         </>
@@ -121,23 +139,23 @@ export default function Profil() {
                         </>
 
                       }
-                       <div style={{ display: "flex" }}>
-                            <label className="btn btn-primary " for="im" style={{ width: "50px", height: "40px", margin: "5px" }}>
-                              <i className="fas fa-image " style={{ margin: "2px" }}></i>
-                            </label>
-                            <button className="btn btn-primary " onClick={() => {
-                              uploadImage()
-                            }}><i className="fas fa-upload"></i> </button>
-                          </div>
+                      <div style={{ display: "flex" }}>
+                        <label className="btn btn-primary " for="im" style={{ width: "50px", height: "40px", margin: "5px" }}>
+                          <i className="fas fa-image " style={{ margin: "2px" }}></i>
+                        </label>
+                        <button className="btn btn-primary " onClick={() => {
+                          uploadImage()
+                        }}><i className="fas fa-upload"></i> </button>
+                      </div>
                       <div className="mt-3">
                         <h4>{UserName.firstName} {UserName.lastName} </h4>
                         <p className="text-secondary mb-1">   {UserName.appUserRole}</p>
 
                         <Link to='/update' >
-                      <button className="btn btn-primary" ><i className="fa fa-edit" ></i> </button>
-                 
-       
-        </Link>
+                          <button className="btn btn-primary" ><i className="fa fa-edit" ></i> </button>
+
+
+                        </Link>
 
                       </div>
                     </div>
@@ -170,7 +188,7 @@ export default function Profil() {
                         <h6 className="mb-0">Téléphone</h6>
                       </div>
                       <div className="col-sm-9 text-secondary">
-                        {UserName.numtel}  
+                        {UserName.numtel}
                       </div>
                     </div>
                     <hr />
@@ -180,7 +198,7 @@ export default function Profil() {
                       </div>
                       <div className="col-sm-9 text-secondary">
 
-                        {UserName.groupe ? UserName.groupe : <p>Pas de groupe disponible</p>}
+                        {Groupe ?  Groupe.map(groupe => <li>{groupe[1]}</li>) : <p>Pas de groupe disponible</p>}
                       </div>
                     </div>
                     <hr />
@@ -212,3 +230,5 @@ export default function Profil() {
   );
 
 };
+
+

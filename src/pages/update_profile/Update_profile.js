@@ -39,6 +39,7 @@ export default function Update (){
       lastName: User.lastName,
       email: User.email,
       numtel: User.numtel,
+      password:"",
       
     }
 

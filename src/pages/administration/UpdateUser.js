@@ -2,7 +2,10 @@ import { Container, Dropdown } from "react-bootstrap";
 import axios from "axios";
 import { useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import { useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom";
+import 'react-notifications/lib/notifications.css';
+import { NotificationManager } from 'react-notifications';
+import Card from "react-bootstrap/Card";
 export default function UpdateUser(props) {
   const location = useLocation();
   const history = useHistory();
@@ -53,11 +56,15 @@ export default function UpdateUser(props) {
       , config)
       .then(res => {
         console.log(res.data)
-
+        NotificationManager.success( "Utilisateur modifier" ,"Succés",2000 );
         history.push("/Administration");
         // window.location.reload();
 
-      }).catch(err => console.error(err))
+      })
+      .catch(er => {
+        console.log(er);
+        NotificationManager.error("Verifier vos données", 'Error!');
+    });
   }
   function handle(e) {
     const newdata = { ...data }
@@ -69,8 +76,8 @@ export default function UpdateUser(props) {
 
 
   return (
-    <main>
-      <div className="main__container">
+    <div className="groupCard">
+      <Card>
         <div className="main__title">
 
           <div className="main__greeting">
@@ -78,7 +85,7 @@ export default function UpdateUser(props) {
         </div>
         <Container >
           <form onSubmit={(e) => submit(e)}>
-            <h1>Modifier Utilisateur</h1>
+            <h2>Modifier Utilisateur</h2>
             <br></br>
 
             <div className="row">
@@ -122,12 +129,17 @@ export default function UpdateUser(props) {
             </div>
 
             <br></br>
-            <button className="btn btn-primary btn-block">Update</button>
+            <button className="btn btn-info btn-block">Modifier</button>
           </form>
 
         </Container>
-      </div>
-    </main>
+        <div className="go-left" >
+                <div className="go-ar">
+                <i class="fas fa-wrench"></i>
+             </div>
+              </div>
+      </Card>
+    </div>
 
   )
 }
