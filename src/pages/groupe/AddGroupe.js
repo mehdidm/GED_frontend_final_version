@@ -41,16 +41,18 @@ export default function AddGroupe() {
     
 
     })
-    function submit(e) {
+    function submit(e,) {
+        
         //const date =  new Date().toLocaleString();
         //console.log(date)
         e.preventDefault();
         axios.post('groupe', {
 
             name: data.name,
+            controleur:id,
         
 
-        })
+        },config)
             .then(res => {
                 console.log(res.data)
                 NotificationManager.success( "Groupe ajouter avec succés" ,"succés",2000 );
@@ -90,6 +92,7 @@ export default function AddGroupe() {
                                 <label>Nom du Groupe</label>
                                 <input type="text" required className="form-control" placeholder=" Nom du Groupe" aria-label="First name" onChange={(e) => handle(e)} id="name" value={data.name} />
                             </div>
+                         
                            
                         </div>
                         <br></br>

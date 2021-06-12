@@ -14,9 +14,9 @@ import { NavLink } from 'react-router-dom';
 const Sidebar = () => {
   return (
     <div
-      style={{ display: 'grid', height: '100vh'}}
+      style={{ display: 'grid', height: '100vh' }}
     >
-      <CDBSidebar  textColor="#fff" backgroundColor="#333">
+      <CDBSidebar textColor="#fff" backgroundColor="#333">
         <img src={logo} alt="logo" style={{ width: "80px", padding: "8px" }} />
         <CDBSidebarHeader prefix={<i className="fa fa-bars fa-large"></i>}>
 
@@ -25,8 +25,8 @@ const Sidebar = () => {
             className="text-decoration-none"
             style={{ color: 'inherit' }}
           >
-            Sidebar
-            </a>
+            Menu
+          </a>
 
         </CDBSidebarHeader>
 
@@ -35,9 +35,7 @@ const Sidebar = () => {
             <NavLink exact to="/" activeClassName="activeClicked">
               <CDBSidebarMenuItem icon="home">Home</CDBSidebarMenuItem>
             </NavLink>
-            <NavLink exact to="/files" activeClassName="activeClicked">
-              <CDBSidebarMenuItem icon="file">Files</CDBSidebarMenuItem>
-            </NavLink>
+
             <NavLink exact to="/archive" activeClassName="activeClicked">
               <CDBSidebarMenuItem icon="archive">archive</CDBSidebarMenuItem>
             </NavLink>
@@ -46,38 +44,54 @@ const Sidebar = () => {
             </NavLink>
             <NavLink exact to="/analytics" activeClassName="activeClicked">
               <CDBSidebarMenuItem icon="chart-line">
-                Analytics
-                </CDBSidebarMenuItem>
-            </NavLink>
-            <NavLink exact to="/Administration" activeClassName="activeClicked">
-              <CDBSidebarMenuItem icon="hdd">
-
-                Administration
-                </CDBSidebarMenuItem>
+                Statistique
+              </CDBSidebarMenuItem>
             </NavLink>
 
-            <NavLink exact to="/groupes" activeClassName="activeClicked">
+            {localStorage.getItem('Role') == "INGENIEUR" | localStorage.getItem('Role') == "SUPERVISEUR" | localStorage.getItem('Role') == "CONTROLEUR"?
+              <NavLink exact to="/Administration" activeClassName="activeClicked">
+                <CDBSidebarMenuItem icon="hdd">
+
+                  Administration
+                </CDBSidebarMenuItem>
+              </NavLink>
+
+              :
+              <div></div>
+            }
+
+
+
+
+            {localStorage.getItem('Role') == "SUPERVISEUR" | localStorage.getItem('Role') == "INGENIEUR" | localStorage.getItem('Role') == "CONTROLEUR" ?
+              <NavLink exact to="/groupes" activeClassName="activeClicked">
+                <CDBSidebarMenuItem >
+                  <i class="fas fa-users-cog" style={{ marginRight: "10px" }}></i>
+                  Groupes Administration
+                </CDBSidebarMenuItem>
+              </NavLink>
+              :
+              <div></div>
+            }
+
+            <NavLink exact to="/mesGroupes" activeClassName="activeClicked">
               <CDBSidebarMenuItem icon="users">
-                Groupes
-                </CDBSidebarMenuItem>
+                Mes Groupes
+              </CDBSidebarMenuItem>
             </NavLink>
+
             <NavLink exact to="/Tasks" activeClassName="activeClicked">
               <CDBSidebarMenuItem >
-              <i className="fas fa-tasks" style={{marginRight:"10px"}}></i>
-              Tâches
-                </CDBSidebarMenuItem>
+                <i className="fas fa-tasks" style={{ marginRight: "10px" }}></i>
+                Tâches
+              </CDBSidebarMenuItem>
             </NavLink>
 
 
-            <NavLink
-              exact
-              to="/hero404"
-              target="_blank"
-              activeClassName="activeClicked"
-            >
-              <CDBSidebarMenuItem icon="">
-                404 page
-                </CDBSidebarMenuItem>
+            <NavLink exact to="/Chat" activeClassName="activeClicked">
+              <CDBSidebarMenuItem icon="comment">
+                Boite de conversation
+              </CDBSidebarMenuItem>
             </NavLink>
             <NavLink
               exact
@@ -87,26 +101,13 @@ const Sidebar = () => {
             >
               <CDBSidebarMenuItem icon="exclamation-circle">
                 404 page
-                </CDBSidebarMenuItem>
+              </CDBSidebarMenuItem>
             </NavLink>
-            <NavLink exact to="/Chat" activeClassName="activeClicked">
-              <CDBSidebarMenuItem icon="comment">
-                Boite de conversation
-                </CDBSidebarMenuItem>
-            </NavLink>
+
 
           </CDBSidebarMenu>
         </CDBSidebarContent>
 
-        <CDBSidebarFooter style={{ textAlign: 'center' }}>
-          <div
-            style={{
-              padding: '20px 5px',
-            }}
-          >
-            Sidebar Footer
-            </div>
-        </CDBSidebarFooter>
       </CDBSidebar>
     </div>
   );

@@ -198,7 +198,7 @@ export default function Profil() {
                       </div>
                       <div className="col-sm-9 text-secondary">
 
-                        {Groupe ?  Groupe.map(groupe => <li>{groupe[1]}</li>) : <p>Pas de groupe disponible</p>}
+                        {Groupe.length !== 0 ?  Groupe.map(groupe => <li>{groupe[1]}</li>) : <p>Pas de groupe disponible</p>}
                       </div>
                     </div>
                     <hr />

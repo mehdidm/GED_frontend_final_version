@@ -5,7 +5,7 @@ import Navbar from './components/Navbar/Navbar';
 import Home from './pages/home/home';
 import { Container } from 'react-bootstrap';
 import Login from './pages/login/login';
-import Files from './pages/fetching_files/Fetching_files'
+
 import Profil from './pages/profil/profil'
 
 import Update from './pages/update_profile/Update_profile';
@@ -36,6 +36,7 @@ import { NotificationContainer } from 'react-notifications';
 import Tasks from './pages/workflow/Tasks';
 import TaskUser from './pages/workflow/TaskUser';
 import UpdateGroupe from './pages/groupe/UpdateGroupe';
+import MyGroupes from './pages/groupe/MyGroupes';
 
 
 
@@ -65,7 +66,7 @@ const App = (props) => {
             {localStorage.getItem('token') ?
               <>
                 <Route path="/" exact component={Home} exact />
-                <Route path="/files" component={Files} exact/>
+                
                 <Route path="/update" component={Update}exact />
                 <Route path="/archive" component={Archive}  exact/>
                 <Route path="/profile" component={Profil} exact/>
@@ -73,18 +74,20 @@ const App = (props) => {
                 <Route path="/Administration" component={Admin} exact/>
                 <Route path="/addUser" component={AddUser} exact/>
                 <Route path="/groupes" component={Groupes} exact/>
-                <Route path="/updateUser" component={UpdateUser} exact/>
-                <Route path="/Archive_contenu" component={Archive_Contenu} exact/>
+                <Route path="/updateUser" component={UpdateUser} />
+                <Route path="/Archive_contenu" component={Archive_Contenu} />
                 <Route path="/AddGroupe" component={AddGroupe} exact/>
                 <Route path="/MesFichiers" component={MesFichiers} exact/>
                 <Route path="/FichiersPublics" component={FichiersPublics} exact/>
-                <Route path="/FichierGroupe" component={FichierGroupe} exact/>
-                <Route path="/ListeVersions" component={ListeVersions} exact/>
-                <Route path="/GroupeUsers" component={GroupeUsers} exact/>
+                <Route path="/FichierGroupe" component={FichierGroupe} />
+                <Route path="/ListeVersions" component={ListeVersions} />
+                <Route path="/GroupeUsers" component={GroupeUsers} />
                 <Route exact path="/chat" render={(props) => <Chat {...props} />} />
-                <Route exact path="/Tasks"  component={Tasks} exact />
-                <Route exact path="/TasksUser"  component={TaskUser} exact />
-                <Route exact path="/UpdateGroupe"  component={UpdateGroupe} exact/>
+                <Route exact path="/Tasks"  component={Tasks}  />
+                <Route exact path="/TasksUser"  component={TaskUser}  />
+                <Route exact path="/UpdateGroupe"  component={UpdateGroupe} />
+                <Route exact path="/mesGroupes"  component={MyGroupes} />
+                
                 
            
               </>

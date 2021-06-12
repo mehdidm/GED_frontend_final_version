@@ -4,6 +4,7 @@ import hello from "../../assets/avatar.png";
 import React, { useState, useEffect, useCallback, Component } from 'react';
 import axios from "axios";
 import AuthService from "../../services/auth"
+import Username from "../../services/UserName"
 
 
 
@@ -16,26 +17,8 @@ export default function Home() {
       Authorization: 'Bearer ' + localStorage.getItem('token')
     }
   }
-  const [UserName, setUsername] = useState("");
-
-  useEffect(() => {
-    const getCurrentUse = () => {
-      const id = AuthService.getCurrentUser();
-
-      axios.get('user/' + id,config).then(
-        res => {
-          console.log(res.data.firstName);
-          setUsername(res.data.firstName)
-        },
-        err => {
-          console.log(err)
-        }
-      )
-    }
-    getCurrentUse()
-  }, [])
-
-
+const Role =localStorage.getItem('Role')
+const id =localStorage.getItem('id')
 
 
 
@@ -47,8 +30,9 @@ export default function Home() {
       <div className="main__title">
         <img src={hello} alt="hello" />
         <div className="main__greeting">
-          <h1>Hello {UserName}</h1>
-          <p>Welcome to e-doc</p>
+          <h1> <Username Nom={id}></Username></h1>
+          <p style={{fontSize:"12px"}}>{Role}</p>
+          
         </div>
       </div>
 

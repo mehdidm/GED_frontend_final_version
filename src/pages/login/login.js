@@ -32,6 +32,7 @@ export default class Auth extends Component {
                     setTimeout(function(){
                         window.location.reload(false);
                      }, 2500);
+                   
                 }
                 
 

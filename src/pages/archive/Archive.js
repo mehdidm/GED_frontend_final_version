@@ -118,10 +118,16 @@ function Archive() {
           onChange={event => {
             setSearchTerm(event.target.value)
           }} />
+
+
+            {localStorage.getItem('Role')!=="ADMINISTRATEUR" ?
         <Link to='/addDossier' style={{ marginLeft: "40%" }}>
           <button className="btn btn-dark">  <i className="fa fa-plus-circle"></i> Ajouter Boite</button>
 
         </Link>
+        :
+        <></>
+}
       </div>
 
 

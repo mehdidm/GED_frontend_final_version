@@ -6,11 +6,11 @@ import hello from "../../assets/avatar.png";
 import { useHistory, Link } from "react-router-dom";
 
 import 'animate.css'
-import Popup from "../../components/popup/PopUp";
+import Popup from "../popup/PopUp";
 import { NotificationManager } from 'react-notifications';
 import TaskUser from "../../pages/workflow/TaskUser"
 const pageSize = 1;
-export default function Users() {
+export default function Controleurs() {
     const history = useHistory();
     const  history_task = useHistory();
     
@@ -70,7 +70,7 @@ export default function Users() {
     
     useEffect(
         () => {
-            axios.get('users', config)
+            axios.get('users/all', config)
                 .then(res => {
                     console.log(res.data);
                     setData(res.data);
@@ -161,8 +161,6 @@ export default function Users() {
                             <th>Role</th>
                             < th>Tel</th>
                             <th>Groupes</th>
-                            <th>Delete</th>
-                            <th>Modifier</th>
                             <th>Taches</th>
                         </tr>
                     </thead>
@@ -186,15 +184,9 @@ export default function Users() {
 
                                 <td><Groupes id={user.id}></Groupes></td>
 
+                          
                                 <td>
-                                    <button type="button" className="btn btn-danger" onClick={() => { deleteUser(user.id) }} ><i className="fas fa-trash-alt"></i></button>
-                                </td>
-                                <td> 
-                                     <button type="button" className="btn " style={{backgroundColor:"#00838d"}} onClick={() => Update(user.id)}><i className="fa fa-edit"  style={{color:"#fff"}}aria-hidden="true" ></i></button>
-
-                                </td>
-                                <td>
-                               <div className="d-flex justify-content-around">
+                               <div >
                                <button type="button" className="btn" style={{backgroundColor:"#00838d"}}onClick={() => Contenu(user.id)} ><i className="fas fa-eye" style={{color:"#fff"}}></i></button>
                                 
             
