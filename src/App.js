@@ -37,6 +37,8 @@ import Tasks from './pages/workflow/Tasks';
 import TaskUser from './pages/workflow/TaskUser';
 import UpdateGroupe from './pages/groupe/UpdateGroupe';
 import MyGroupes from './pages/groupe/MyGroupes';
+import AddGroupeUser from './pages/groupe/AddGroupeUser';
+import Stats from './pages/stats/Stats';
 
 
 
@@ -87,6 +89,8 @@ const App = (props) => {
                 <Route exact path="/TasksUser"  component={TaskUser}  />
                 <Route exact path="/UpdateGroupe"  component={UpdateGroupe} />
                 <Route exact path="/mesGroupes"  component={MyGroupes} />
+                <Route exact path="/AddGroupeUser"  component={AddGroupeUser} />
+                <Route exact path="/analytics"  component={Stats} />
                 
                 
            

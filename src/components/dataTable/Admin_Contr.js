@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import _, { initial, slice } from 'lodash'
 import hello from "../../assets/avatar.png";
 import { useHistory, Link } from "react-router-dom";
-
+import ReactPaginate from "react-paginate";
 import 'animate.css'
 import Popup from "../popup/PopUp";
 import { NotificationManager } from 'react-notifications';
@@ -20,16 +20,25 @@ export default function Controleurs() {
         }
     };
     const [users, setData] = useState();
-    const [q, setQ] = useState("");
-    const [paginated, setpaginated] = useState();
-    const [currentPage, setcurrentPage] = useState(1)
     const [task, setTask] = useState({
         task: "",
         de: "",
         description: "",
         ddl: "",
         employe: "",
-    })
+    });
+    const archivePerPage = 9;
+    const [pageNumber, setPageNumber] = useState(0);
+    const pagesVisited = pageNumber * archivePerPage;
+    const [searchTerm, setSearchTerm] = useState('');
+    var num = 0 ;
+    {users ?
+        num= users.length
+          :
+          num=0 }
+        const pageCount = Math.ceil(num / archivePerPage);
+    
+        const changePage = ({ selected }) => { setPageNumber(selected); };
     //console.log(task)
     const [buttonPopup, setButtonPopup] = useState(false);
     function submit(e) {
@@ -74,30 +83,10 @@ export default function Controleurs() {
                 .then(res => {
                     console.log(res.data);
                     setData(res.data);
-                    setpaginated(_(res.data).slice(0).take(pageSize).value());
+                    
                 })
         }, []);
-    const pageCount = users ? Math.ceil(users.length / pageSize) : 0;
-    if (pageCount === 1) return null;
-    const pages = _.range(1, pageCount + 1)
-    const pagination = (pageNo) => {
-        setcurrentPage(pageNo);
-        const startIndex = (pageNo - 1) * pageSize;
-        const paginated = _(users).slice(startIndex).take(pageSize).value();
-        setpaginated(paginated)
-    }
-    //filter function//
-    function search(rows) {
-        return rows.filter(
-            (row) =>
-                row.firstName.toLowerCase().indexOf(q.toLowerCase()) > -1 ||
-                row.lastName.toLowerCase().indexOf(q.toLowerCase()) > -1 ||
-                row.email.toLowerCase().indexOf(q.toLowerCase()) > -1 ||
-                row.numtel.toLowerCase().indexOf(q.toLowerCase()) > -1 ||
-                row.appUserRole.toLowerCase().indexOf(q.toLowerCase()) > -1
-        );
-    }
-    //End filter function//
+   
     //Update function//
 
     function Update(id) {
@@ -147,9 +136,15 @@ export default function Controleurs() {
         <div >
 
             
-            <input className="form-control" placeholder="Chercher ..." style={{ marginTop: 50, marginLeft: 10, marginBottom: 20, width: "20%" }} type="text" value={q} onChange={(e) => setQ(e.target.value)} />
-
-            {  !paginated ? ("No data found") : (
+<input
+                type="text"
+                className="form-control"
+                placeholder="Rechercher ..."
+                style={{ marginTop: 50, marginLeft: 10, marginBottom: 20, width: "20%" }}
+                onChange={event => {
+                    setSearchTerm(event.target.value)
+                }} />
+            {  !users ? ("No data found") : (
                 <table className='table'>
                     <thead className="thead-light">
                         <tr>
@@ -165,7 +160,29 @@ export default function Controleurs() {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((user, index) => (
+                        {users
+                          .filter((val)=>{
+                            if (searchTerm == ""){
+                            //  console.log(val[1])
+                              return val
+                              
+                            }
+                            
+                            else if (
+                              val.appUserRole.toLowerCase().includes(searchTerm.toLowerCase())||
+                              val.email.toLowerCase().includes(searchTerm.toLowerCase())||
+                              val.firstName.toLowerCase().includes(searchTerm.toLowerCase())||
+                              val.lastName.toString().includes(searchTerm.toString())||
+                              val.numtel.toLowerCase().includes(searchTerm.toLowerCase())||
+                              val.id.toString().includes(searchTerm.toString())
+                              ){
+                             
+                              return val
+                            
+                            }
+                          })
+                          .slice(pagesVisited, pagesVisited + archivePerPage)
+                        .map((user, index) => (
                             <tr key={index}>
                                 <td>{user.id}</td>
 
@@ -250,7 +267,16 @@ export default function Controleurs() {
 
             </Popup>
      
-
+            <ReactPaginate
+                        previousLabel={"Previous"}
+                        nextLabel={"Next"}
+                        pageCount={pageCount}
+                        onPageChange={changePage}
+                        containerClassName={"paginationBttns"}
+                        previousClassName={"previousBttn"}
+                        nextLinkClassName={"nextBttn"}
+                        activeClassName={"paginationActive"}
+                    />
         </div>
 
     )

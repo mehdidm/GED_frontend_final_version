@@ -2,11 +2,12 @@
 import axios from "axios";
 import equipe from "../../assets/equipe.png"
 import"./Groupe.css";
-import Popup from "../../components/popup/PopUp";
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { NotificationManager } from 'react-notifications';
 import ReactPaginate from "react-paginate";
 import { useHistory , Link} from "react-router-dom"
+import Popup from "../../components/popup/PopUp";
 
 
  export default function Groupes (){
@@ -23,13 +24,13 @@ import { useHistory , Link} from "react-router-dom"
   const [pageNumber, setPageNumber] = useState(0);
   const archivePerPage = 3;
   const pagesVisited = pageNumber * archivePerPage;
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState('');
   const pageCount = Math.ceil(groupes.length / archivePerPage);
   const changePage = ({ selected }) => { setPageNumber(selected); };
   const history = useHistory();
   const id = localStorage.getItem("id");
   const  history_GroupeId = useHistory();
- 
+  
   useEffect(() => {
     axios.get(`groupes`,config)
       .then(res => {
@@ -72,6 +73,17 @@ import { useHistory , Link} from "react-router-dom"
           num: num, 
         },})
   }
+       //function to send num° dossier to archive_contenu page//
+      //function to send id groupe to file page//
+      function AdduserGroupe(id_groupe) {
+        
+        console.log(id_groupe)
+        history.push({
+            pathname:'/AddGroupeUser/',
+           state: {  // location state
+            id_groupe: id_groupe, 
+          },})
+    }
     //function to send num° dossier to archive_contenu page//
     
 
@@ -106,19 +118,26 @@ import { useHistory , Link} from "react-router-dom"
     })
   }
   const displayGroupe = groupes
-  .slice(pagesVisited, pagesVisited + archivePerPage)
+ 
   .filter((val)=>{
     if (searchTerm == ""){
+     // console.log(val[1])
       return val
       
     }
     
-    else if (val.groupe.name.toLowerCase().incldes(searchTerm.toLowerCase())){
-      
+    else if (
+      val[0].toString().includes(searchTerm.toString())||
+      val[1].toLowerCase().includes(searchTerm.toLowerCase())||
+      val[2].toLowerCase().includes(searchTerm.toLowerCase())||
+      val[3].toLowerCase().includes(searchTerm.toLowerCase())
+      ){
+     
       return val
     
     }
   })
+  .slice(pagesVisited, pagesVisited + archivePerPage)
   .map((groupe, key) => {
     return (
       <div className="card" key={key} style={{ width: "18rem" }}>
@@ -144,24 +163,34 @@ import { useHistory , Link} from "react-router-dom"
                 <i onClick={() =>deleteGroupe(groupe[0])}  className="far fa-trash-alt"></i>
              </div>
               </div>
-      </div>
+   
+              <div className="go-crn" >
+                <div className="go-cl">
+                <i onClick={() =>AdduserGroupe(groupe[0])}  className="fas fa-user-plus"></i>
+             </div>
+              </div>
+   
+    </div>
     )
   });
 
   const displayGroupeCrv = groupesCrv
-  .slice(pagesVisited, pagesVisited + archivePerPage)
+
   .filter((val)=>{
     if (searchTerm == ""){
       return val
       
     }
     
-    else if (val.groupe.name.toLowerCase().incldes(searchTerm.toLowerCase())){
+    else if (
+      val[1].toLowerCase().includes(searchTerm.toLowerCase())
+      ){
       
       return val
     
     }
   })
+  .slice(pagesVisited, pagesVisited + archivePerPage)
   .map((groupe, key) => {
     return (
       <div className="card" key={key} style={{ width: "18rem" }}>
@@ -187,7 +216,13 @@ import { useHistory , Link} from "react-router-dom"
                 <i onClick={() =>deleteGroupe(groupe[0])}  className="far fa-trash-alt"></i>
              </div>
               </div>
-      </div>
+              <div className="go-crn" >
+                <div className="go-cl">
+                <i onClick={() =>AdduserGroupe(groupe[0])}  className="fas fa-user-plus"></i>
+             </div>
+              </div>
+   
+    </div>
     )
   });
 
@@ -195,19 +230,20 @@ import { useHistory , Link} from "react-router-dom"
      return(
         <div className="container">
         <h1 className="title_archive">- Groupes -</h1>
-        <h5 className="title_archive">Nombre totale du groupes ({groupes.length})</h5>
+        <h5 className="title_archive">Nombre totale du groupes ({groupesCrv.length})</h5>
         
           
         <hr />
         <div className="row" >
         <input
-          type="text"
-          className="form-control"
-          placeholder="Rechercher ..."
-          style={{ width: "30%" }}
-          onChange={event => {
-            setSearchTerm(event.target.value)
-          }} />
+            type="text"
+            className="form-control"
+            placeholder="Rechercher ..."
+            style={{ width: "30%" }}
+            onChange={event => {
+              setSearchTerm(event.target.value)
+            }} />
+
           <Link to='/AddGroupe' style={{ marginLeft: "40%" }}>
           <button className="btn btn-dark">  <i className="fa fa-plus-circle"></i> Créer Groupe</button>
        

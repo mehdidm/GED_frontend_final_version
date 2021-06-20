@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback, Component } from 'react';
 import axios from "axios";
 import AuthService from "../../services/auth"
 import "./Tasks.css";
+import ReactPaginate from "react-paginate";
 import Card from "react-bootstrap/Card";
 import 'react-notifications/lib/notifications.css';
 import { NotificationManager } from 'react-notifications';
@@ -19,12 +20,16 @@ export default function Tasks() {
       Authorization: 'Bearer ' + localStorage.getItem('token')
     }
   }
-
+  const [searchTerm, setSearchTerm] = useState('');
   const [Tasks, setTasks] = useState([
 
   ]);
   const id = localStorage.getItem("id");
-
+  const [pageNumber, setPageNumber] = useState(0);
+  const archivePerPage = 5;
+  const pagesVisited = pageNumber * archivePerPage;
+  const pageCount = Math.ceil(Tasks.length / archivePerPage);
+  const changePage = ({ selected }) => { setPageNumber(selected); };
   useEffect(() => {
     axios.get(`getIds`, config)
       .then(res => {
@@ -58,21 +63,44 @@ function Done(id){
 
   return (
     <div >
-      
+       <input
+            type="text"
+            className="form-control"
+            placeholder="Rechercher ..."
+            style={{ width: "30%" , margin:"25px"}}
+            onChange={event => {
+              setSearchTerm(event.target.value)
+            }} />
       {localStorage.getItem("Role")==="ADMINISTRATEUR" ?   
         <MyTasks IdTask={id}></MyTasks> 
         :
         <>
-        <div className="containerCard" >
+        <div className="containerCard"  >
 
 
-{Tasks.map((task, index) => {
+{Tasks
+ .filter((val)=>{
+  if (searchTerm == ""){
+    //console.log(Object.values(val)[1].task)
+    return val
+    
+  }
+  
+  else if (Object.values(val)[1].task.toLowerCase().includes(searchTerm.toLowerCase())){
+   
+    return val
+  
+  }
+})
+.slice(pagesVisited, pagesVisited + archivePerPage)
+.map((task, index) => {
   // play here....
   console.log(Object.values(task));
 
   return (
 
     <Card className="card1" key={index} >
+        
       <div >
         <img src={image} style={{ width: "15%" }} />
         <div>
@@ -108,6 +136,8 @@ function Done(id){
  
       <i className="fas fa-check"></i>
       </div>
+         
+   
     </Card>
 
 
@@ -122,8 +152,22 @@ function Done(id){
         </>
       
     }
+    <br></br>
+         
+         <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+        
+            pageCount={pageCount}
+            onPageChange={changePage}
+            containerClassName={"paginationBttns"}
+            previousClassName={"previousBttn"}
+            nextLinkClassName={"nextBttn"}
+            activeClassName={"paginationActive"}
+          />
   
     </div>
 
   )
+  
 }

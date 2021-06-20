@@ -66,7 +66,7 @@ const Sidebar = () => {
             {localStorage.getItem('Role') == "SUPERVISEUR" | localStorage.getItem('Role') == "INGENIEUR" | localStorage.getItem('Role') == "CONTROLEUR" ?
               <NavLink exact to="/groupes" activeClassName="activeClicked">
                 <CDBSidebarMenuItem >
-                  <i class="fas fa-users-cog" style={{ marginRight: "10px" }}></i>
+                  <i className="fas fa-users-cog" style={{ marginRight: "10px" }}></i>
                   Groupes Administration
                 </CDBSidebarMenuItem>
               </NavLink>

@@ -44,6 +44,27 @@ export default function GoupeUsers() {
   }, [])
 
   const displayUsers = users
+  .filter((val)=>{
+    if (searchTerm == ""){
+      console.log(val.id)
+      return val
+      
+    }
+    
+    else if (
+      
+      val.firstName.toLowerCase().includes(searchTerm.toLowerCase())||
+      val.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      
+      val.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      val.appUserRole.toLowerCase().includes(searchTerm.toLowerCase()) 
+
+      ){
+     
+      return val
+    
+    }
+  })
     .slice(pagesVisited, pagesVisited + documentPerPage)
     .map((user, key) => {
       return (

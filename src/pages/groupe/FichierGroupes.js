@@ -5,19 +5,27 @@ import axios from "axios";
 import AuthService from "../../services/auth"
 import doc from "../../assets/doc.png";
 import { NotificationManager } from 'react-notifications';
-import { useHistory, useLocation, Link } from "react-router-dom"
+import { useHistory, useLocation, Link } from "react-router-dom";
+import ReactPaginate from "react-paginate";
 export default function FichierGroupe() {
 
 
   const history = useHistory();
   const location = useLocation();
   const num = location.state.num;
+  const [files, setfiles] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+  const archivePerPage = 7;
+  const pagesVisited = pageNumber * archivePerPage;
+  const [searchTerm, setSearchTerm] = useState('');
+  const pageCount = Math.ceil(files.length / archivePerPage);
+  const changePage = ({ selected }) => { setPageNumber(selected); };
   const config = {
     headers: {
       Authorization: 'Bearer ' + localStorage.getItem('token')
     }
   }
-  const [files, setfiles] = useState([]);
+
   async function FetchFiles() {
     await axios.get(`/files/ListFilesGroupe/${num}`, config).then(res => {
       console.log(res.data)
@@ -34,8 +42,16 @@ export default function FichierGroupe() {
     <main>
 
       <div className="main__container">
-        <h1 style={{ textAlign: "center", margin: "2%" }}>- Mes fichiers -</h1>
-        <h5 style={{ textAlign: "center", margin: "2%" }}>- Nombre total des fichiers ({files.length}) -</h5>
+        <h1 style={{ textAlign: "center", margin: "1%" }}>- Mes fichiers -</h1>
+        <h5 style={{ textAlign: "center", margin: "1%" }}>- Nombre total des fichiers ({files.length}) -</h5>
+        <input
+            type="text"
+            className="form-control"
+            placeholder="Rechercher ..."
+            style={{ width: "30%" }}
+            onChange={event => {
+              setSearchTerm(event.target.value)
+            }} />
         <MyDropzone_file></MyDropzone_file>
         <table className="table table-striped" >
           <thead>
@@ -54,7 +70,28 @@ export default function FichierGroupe() {
           </thead>
           <tbody>
 
-            {files.map(RenderFiles)}
+            {files
+                  .filter((val)=>{
+                    if (searchTerm == ""){
+                      console.log(val[1])
+                      return val
+                      
+                    }
+                    
+                    else if (
+                      val[0].toLowerCase().includes(searchTerm.toLowerCase())||
+                      val[1].toLowerCase().includes(searchTerm.toLowerCase())||
+                      val[2].toLowerCase().includes(searchTerm.toLowerCase())||
+                      val[4].toLowerCase().includes(searchTerm.toLowerCase())
+                      
+                      ){
+                     
+                      return val
+                    
+                    }
+                  })
+                  .slice(pagesVisited, pagesVisited + archivePerPage)
+            .map(RenderFiles)}
 
           </tbody>
         </table>
@@ -65,6 +102,16 @@ export default function FichierGroupe() {
 
 
       </div>
+      <ReactPaginate
+         previousLabel={"Previous"}
+         nextLabel={"Next"}
+         pageCount={pageCount}
+         onPageChange={changePage}
+         containerClassName={"paginationBttns"}
+         previousClassName={"previousBttn"}
+         nextLinkClassName={"nextBttn"}
+         activeClassName={"paginationActive"}
+       />
     </main>
 
 

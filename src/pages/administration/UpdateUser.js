@@ -135,7 +135,7 @@ export default function UpdateUser(props) {
         </Container>
         <div className="go-left" >
                 <div className="go-ar">
-                <i class="fas fa-wrench"></i>
+                <i className="fas fa-wrench"></i>
              </div>
               </div>
       </Card>

@@ -21,10 +21,14 @@ export default function Archive_Contenu() {
   const [searchTerm, setSearchTerm] = useState('')
   const pageCount = Math.ceil(files.length / documentPerPage);
   const changePage = ({ selected }) => { setPageNumber(selected); };
+  const config = {
+    headers: {
+      Authorization: 'Bearer ' + localStorage.getItem('token')
+    }};
   
  
   useEffect(() => {
-    axios.get(`/archive/contenu/${num}`)
+    axios.get(`/archive/contenu/${num}`,config)
       .then(res => {
         console.log(res.data)
         setfiles(res.data)
@@ -38,6 +42,25 @@ export default function Archive_Contenu() {
 
 
   const displayFiles = files
+  .filter((val)=>{
+    if (searchTerm == ""){
+     // console.log(val[1])
+      return val
+      
+    }
+    
+    else if (val[0].toLowerCase().includes(searchTerm.toLowerCase())||
+    val[0].toLowerCase().includes(searchTerm.toLowerCase())||
+    val[1].toLowerCase().includes(searchTerm.toLowerCase())||
+    val[2].toLowerCase().includes(searchTerm.toLowerCase())||
+    val[4].toLowerCase().includes(searchTerm.toLowerCase())||
+    val[5].toLowerCase().includes(searchTerm.toLowerCase())
+    ){
+     
+      return val
+    
+    }
+  })
     .slice(pagesVisited, pagesVisited + documentPerPage)
     .map((file, key) => {
       return (
@@ -65,17 +88,6 @@ export default function Archive_Contenu() {
       )
     });
 
-    function Contenu(num) {
-      const history = useHistory();
-      console.log(num)
-      history.push({
-          pathname: '/ListeVersions/' + num,
-          state: {  // location state
-              num: num,
-          },
-      })
-    }
-  
 
 
   return (
@@ -84,14 +96,14 @@ export default function Archive_Contenu() {
       <h5 className="title_archive">Nombre totale de fichiers ({files.length})</h5>
       <hr />
       <div className="row" >
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Rechercher ..."
-          style={{ width: "30%" }}
-          onChange={event => {
-            setSearchTerm(event.target.value)
-          }} />
+      <input
+            type="text"
+            className="form-control"
+            placeholder="Rechercher ..."
+            style={{ width: "30%" }}
+            onChange={event => {
+              setSearchTerm(event.target.value)
+            }} />
         <div style={{ marginLeft: "40%" }}>
           <MyDropzone_file ></MyDropzone_file>
         </div>
@@ -118,6 +130,32 @@ export default function Archive_Contenu() {
   );
 
 };
+export function Contenu({ id }) {
+  const config = {
+    headers: {
+      Authorization: 'Bearer ' + localStorage.getItem('token')
+    }
+  }
+  const [versions, setVersions] = useState([])
+  useEffect(() => {
+    axios.get(`files/ListVersions/${id}`, config)
+      .then(res => {
+        console.log(res.data)
+        setVersions(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }, [])
+  return (
+    <div>
+
+      { versions.map(version => <li key={version[0]}>{version[1]}</li>)}
+
+    </div>
+
+  )
+}
 
 export function MyDropzone_file() {
   const history = useHistory();
@@ -140,7 +178,7 @@ export function MyDropzone_file() {
 
 
     console.log(file);
-    axios.post(`/archive/files/${num}`, formData,
+    axios.post(`/archive/files/${num}`, formData,config,
 
 
     ).then(() => {

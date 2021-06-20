@@ -19,6 +19,25 @@
     background-color:rgb(214, 71, 71);
     border-radius: 0 4px 0 32px;
   }
+  .go-crn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    background-color:rgb(9, 165, 170);
+    border-radius: 4px 0 32px 0;
+  }
+  .go-cl {
+    margin-top: -4px;
+    margin-left: -4px;
+    color: white;
+    font-family: courier, sans;
+  }
   
   .go-close {
     margin-top: -4px;

@@ -38,6 +38,25 @@ export default function ListeVersions(params) {
 
 
     const displayFiles = files
+    .filter((val)=>{
+        if (searchTerm == ""){
+          //console.log(Object.values(val)[1].task)
+          return val
+          
+        }
+        
+        else if (
+            val[0].toLowerCase().includes(searchTerm.toLowerCase())||
+            val[5].toLowerCase().includes(searchTerm.toLowerCase())||
+            val[6].toLowerCase().includes(searchTerm.toLowerCase())||
+            val[1].toLowerCase().includes(searchTerm.toLowerCase())
+      
+            ){
+         
+          return val
+        
+        }
+      })
         .slice(pagesVisited, pagesVisited + documentPerPage)
         .map((file, key) => {
             return (
@@ -50,19 +69,104 @@ export default function ListeVersions(params) {
                         <p >Heure : {file[4].slice(11, [19])}</p>
 
                         <p >Taille :{file[3]}</p>
-                        <div className="d-flex justify-content-between" >
-                        <button className="btn btn-info" onClick={() => { window.location.href = "http://localhost:8080/files/versions/viewVersion/" + file[0] }} >
-                               <i className="fas fa-eye"></i>
-                  
-                        </button>
-                        <button className="btn btn-info" onClick={() => { window.location.href = "http://localhost:8080/files/versions/" + file[0] }}> <i className="fas fa-download"></i></button>
-                   </div>
+                        <div className="d-flex justify-content-center" >
+                            <button className="btn btn-info" onClick={() => { window.location.href = "http://localhost:8080/files/versions/viewVersion/" + file[0] }} >
+                                <i className="fas fa-eye"></i>
+
+                            </button>
+
+                            <button className="btn btn-info" style={{marginLeft:"10px"}} onClick={() => { window.location.href = "http://localhost:8080/files/versions/" + file[0] }}> <i className="fas fa-download"></i></button>
+                        </div>
                     </div>
                 </div>
 
             )
         });
-
+        function Versions({ id }) {
+            const config = {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            }
+            const [versions, setVersions] = useState([])
+            useEffect(() => {
+                axios.get(`files/ListVersions/${id}`, config)
+                    .then(res => {
+                        console.log(res.data)
+                        setVersions(res.data)
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+            }, [])
+            return (
+                <div>
+                    <div className="row" >
+        
+                        <MyDropzone_file ></MyDropzone_file>
+                    </div>
+        
+                    {versions.map(version => <li key={version[0]}>{version[1]}</li>)}
+        
+                </div>
+        
+            )
+        }
+        
+         function MyDropzone_file() {
+            const history = useHistory();
+            const location = useLocation();
+            const num = location.state.num;
+        
+            const config = {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            }
+            const onDrop = useCallback(acceptedFiles => {
+                const file = acceptedFiles[0];
+                console.log(file);
+                const id = localStorage.getItem('id');
+        
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("user", id);
+        
+        
+        
+                console.log(file);
+                axios.post(`/files/Public/${num}`, formData, config
+        
+        
+                ).then(() => {
+                    console.log("file uploaded successfully")
+                    NotificationManager.success("Version ajouter avec succés", "Succés", 2000);
+                    setTimeout(function () {
+                        window.location.reload(false);
+                    }, 2500);
+                }
+        
+                ).catch(er => {
+                    console.log(er);
+                    NotificationManager.error("Vérifier votre fichier", 'Error!');
+                });
+        
+            }, [])
+            const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+        
+            return (
+                <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    {
+                        isDragActive ?
+                            (<p>Drop the files here ...</p>) : (
+                                <ReactBootstrap.Button className="btn btn-dark" variant="info"><i className="fa fa-plus-circle"></i> Ajouter version</ReactBootstrap.Button>
+                            )
+        
+                    }
+                </div>
+            )
+        }
     return (
         <div>
             <div className="container">
@@ -101,91 +205,6 @@ export default function ListeVersions(params) {
                 </div>
             </div>
 
-        </div>
-    )
-}
-export function Versions({ id }) {
-    const config = {
-        headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-    }
-    const [versions, setVersions] = useState([])
-    useEffect(() => {
-        axios.get(`files/ListVersions/${id}`, config)
-            .then(res => {
-                console.log(res.data)
-                setVersions(res.data)
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }, [])
-    return (
-        <div>
-            <div className="row" >
-
-                <MyDropzone_file ></MyDropzone_file>
-            </div>
-
-            { versions.map(version => <li key={version[0]}>{version[1]}</li>)}
-
-        </div>
-
-    )
-}
-
-export function MyDropzone_file() {
-    const history = useHistory();
-    const location = useLocation();
-    const num = location.state.num;
-
-    const config = {
-        headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-    }
-    const onDrop = useCallback(acceptedFiles => {
-        const file = acceptedFiles[0];
-        console.log(file);
-        const id = localStorage.getItem('id');
-
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("user", id);
-
-
-
-        console.log(file);
-        axios.post(`/files/Public/${num}`, formData, config
-
-
-        ).then(() => {
-            console.log("file uploaded successfully")
-            NotificationManager.success( "Version ajouter avec succés" ,"Succés",2000 );
-            setTimeout(function(){
-                window.location.reload(false);
-             }, 2500);
-        }
-
-        ).catch(er => {
-            console.log(er);
-            NotificationManager.error("Vérifier votre fichier", 'Error!');
-        });
-
-    }, [])
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
-
-    return (
-        <div {...getRootProps()}>
-            <input {...getInputProps()} />
-            {
-                isDragActive ?
-                    (<p>Drop the files here ...</p>) : (
-                        <ReactBootstrap.Button className="btn btn-dark" variant="info"><i className="fa fa-plus-circle"></i> Ajouter version</ReactBootstrap.Button>
-                    )
-
-            }
         </div>
     )
 }

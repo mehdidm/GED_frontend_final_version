@@ -40,7 +40,7 @@ function Archive() {
 
     console.log(num)
     history.push({
-      pathname: '/Archive_contenu/' + num,
+      pathname: '/Archive_contenu/' ,
       state: {  // location state
         num: num,
       },
@@ -48,19 +48,29 @@ function Archive() {
   }
   //function to send num° dossier to archive_contenu page//
   const displayArchive = archives
-    .slice(pagesVisited, pagesVisited + archivePerPage)
+   
     .filter((val) => {
       if (searchTerm == "") {
         return val
 
       }
 
-      else if (val.archives.array[0].toLowerCase().incldes(searchTerm.toLowerCase())) {
+      else if (
+        val[0].toLowerCase().includes(searchTerm.toLowerCase())||
+        val[1].toLowerCase().includes(searchTerm.toLowerCase())||
+        val[2].toLowerCase().includes(searchTerm.toLowerCase())||
+        val[3].toLowerCase().includes(searchTerm.toLowerCase())||
+        val[4].toLowerCase().includes(searchTerm.toLowerCase())||
+        val[5].toLowerCase().includes(searchTerm.toLowerCase())||
+        val[8].toLowerCase().includes(searchTerm.toLowerCase())||
+        val[7].toLowerCase().includes(searchTerm.toLowerCase())
+        ) {
 
         return val
         console.log(val);
       }
     })
+    .slice(pagesVisited, pagesVisited + archivePerPage)
     .map((archive, key) => {
       return (
         <div className="card" key={key} style={{ width: "18rem" }}>

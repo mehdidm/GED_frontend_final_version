@@ -65,7 +65,7 @@ export default function Profil() {
     const formData = new FormData()
     formData.append("image", imageSelected)
 
-    axios.put(`userImage/${id}`, formData, {
+    axios.put(`userImage/${id}`, formData,config, {
       onUploadProgres: progressEvent => {
         console.log('Upload Progress' + Math.round((progressEvent.loaded / progressEvent.total) * 100) + '%')
       }

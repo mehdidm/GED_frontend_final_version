@@ -6,7 +6,7 @@ import { NotificationManager } from 'react-notifications';
 import image from "../../assets/completed-task.png"
 import { useHistory, useLocation, Link } from "react-router-dom";
 import User from "../../services/UserName";
-
+import ReactPaginate from "react-paginate";
 export default function TaskUser() {
 
     const config = {
@@ -18,6 +18,12 @@ export default function TaskUser() {
     const location = useLocation();
     const num =location.state.num;
     console.log(num)
+    const [pageNumber, setPageNumber] = useState(0);
+    const archivePerPage = 5;
+    const pagesVisited = pageNumber * archivePerPage;
+    const pageCount = Math.ceil(Tasks.length / archivePerPage);
+    const changePage = ({ selected }) => { setPageNumber(selected); };
+    const [searchTerm, setSearchTerm] = useState('');
     useEffect(() => {
         const getCurrentUse = () => {
 
@@ -61,6 +67,14 @@ export default function TaskUser() {
  :
 <> 
          <div >
+         <input
+            type="text"
+            className="form-control"
+            placeholder="Rechercher ..."
+            style={{ width: "30%" , margin:"25px"}}
+            onChange={event => {
+              setSearchTerm(event.target.value)
+            }} />
          <Card><div className="d-flex justify-content-center">
          <i className="far fa-clipboard  fa-3x" style={{marginRight:"5px"}}></i><h1 style={{marginRight:"5px"}}>Employé : </h1>
          <p style={{fontSize:"210%"}}><User Nom={num} ></User> </p>
@@ -69,7 +83,22 @@ export default function TaskUser() {
       <div className="containerCard" >
 
 
-        {Tasks.map((task, index) => {
+        {Tasks
+        .filter((val)=>{
+          if (searchTerm == ""){
+            //console.log(Object.values(val)[1].task)
+            return val
+            
+          }
+          
+          else if (Object.values(val)[1].task.toLowerCase().includes(searchTerm.toLowerCase())){
+           
+            return val
+          
+          }
+        })
+        .slice(pagesVisited, pagesVisited + archivePerPage)
+        .map((task, index) => {
           // play here....
          console.log(Object.values(task));
 
@@ -125,7 +154,20 @@ export default function TaskUser() {
     </div>
 
 </>
-  }</div>
+  }
+  <br></br>
+       <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+        
+            pageCount={pageCount}
+            onPageChange={changePage}
+            containerClassName={"paginationBttns"}
+            previousClassName={"previousBttn"}
+            nextLinkClassName={"nextBttn"}
+            activeClassName={"paginationActive"}
+          />
+          </div>
 
 
     )

@@ -10,6 +10,7 @@ import { useHistory, useLocation , Link} from "react-router-dom"
 
 import 'react-notifications/lib/notifications.css';
 import { NotificationManager } from 'react-notifications';
+import Search from "antd/lib/transfer/search";
 
 
 export default function FichiersPublics() {
@@ -23,7 +24,8 @@ export default function FichiersPublics() {
     const [pageNumber, setPageNumber] = useState(0);
     const filePerPage = 3;
     const pagesVisited = pageNumber * filePerPage;
-    const [searchTerm, setSearchTerm] = useState('')
+    const [searchTerm, setSearchTerm] = useState('');
+    const [search , setSearch]= useState('');
     const pageCount = Math.ceil(files.length / filePerPage);
     const changePage = ({ selected }) => { setPageNumber(selected); };
     const history = useHistory();
@@ -43,7 +45,6 @@ export default function FichiersPublics() {
     }, [])
     //function to send id file ti versions  page//
     function Contenu(num) {
-
         console.log(num)
         history.push({
             pathname: '/ListeVersions/' + num,
@@ -55,19 +56,28 @@ export default function FichiersPublics() {
 
     //function to send id file ti versions  page//
     const displayFile = files
-        .slice(pagesVisited, pagesVisited + filePerPage)
+
         .filter((val) => {
-            if (searchTerm == "") {
+            if (search == "") {
+               // console.log(val[1]);
                 return val
 
             }
 
-            else if (val.files.array[0].toLowerCase().incldes(searchTerm.toLowerCase())) {
-
+            else if (
+                val[0].toLowerCase().includes(search.toLowerCase())||
+                val[1].toLowerCase().includes(search.toLowerCase())||
+                val[3].toString().includes(search.toString())||
+                val[6].toLowerCase().includes(search.toLowerCase())||
+                val[7].toLowerCase().includes(search.toLowerCase())
+                
+                ) {
+               // console.log(val);
                 return val
-                console.log(val);
+              
             }
         })
+        .slice(pagesVisited, pagesVisited + filePerPage)
         .map((file, key) => {
             return (
                 <div className="card" key={key} style={{ width: "18rem" }}>
@@ -118,9 +128,10 @@ export default function FichiersPublics() {
                     className="form-control"
                     placeholder="Rechercher ..."
                     style={{ width: "30%",marginRight: "50%" }}
-                    onChange={event => {
-                        setSearchTerm(event.target.value)
+                    onChange={e => {
+                        setSearch(e.target.value)
                     }} />
+                    
                      <MyDropzone_file ></MyDropzone_file>
             </div>
 

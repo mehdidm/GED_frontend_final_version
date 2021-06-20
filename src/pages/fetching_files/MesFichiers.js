@@ -5,11 +5,10 @@ import axios from "axios";
 import AuthService from "../../services/auth"
 import doc from "../../assets/doc.png";
 import * as ReactBootstrap from "react-bootstrap";
+import ReactPaginate from "react-paginate";
 import { useHistory, useLocation, Link } from "react-router-dom"
-
 import 'react-notifications/lib/notifications.css';
 import { NotificationManager } from 'react-notifications';
-
 
 
 export default function MesFichiers() {
@@ -21,12 +20,21 @@ export default function MesFichiers() {
       Authorization: 'Bearer ' + localStorage.getItem('token')
     }
   }
+  
+  const [pageNumber, setPageNumber] = useState(0);
   const [files, setfiles] = useState([]);
+  const archivePerPage = 7;
+  const pagesVisited = pageNumber * archivePerPage;
+  const [searchTerm, setSearchTerm] = useState('');
+  const pageCount = Math.ceil(files.length / archivePerPage);
+  const changePage = ({ selected }) => { setPageNumber(selected); };
   async function FetchFiles() {
-    await axios.get(`/files/ListFiles/${id}`, config).then(res => {
+    await axios.get(`/files/ListFiles/${id}`, config)
+    .then(res => {
       console.log(res.data)
       setfiles(res.data)
-    });
+    })
+    .catch(error => console.log(error));
   }
   useEffect(
     () => {
@@ -38,9 +46,17 @@ export default function MesFichiers() {
     <main>
 
       <div className="main__container">
-        <h1 style={{ textAlign: "center", margin: "2%" }}>- Mes fichiers -</h1>
-        <h5 style={{ textAlign: "center", margin: "2%" }}>- Nombre total des fichiers ({files.length}) -</h5>
-        <MyDropzone_file></MyDropzone_file>
+        <h1 style={{ textAlign: "center", margin: "1%" }}>- Mes fichiers -</h1>
+        <h5 style={{ textAlign: "center", margin: "1%" }}>- Nombre total des fichiers ({files.length}) -</h5>
+        <input
+            type="text"
+            className="form-control"
+            placeholder="Rechercher ..."
+            style={{ width: "30%" }}
+            onChange={event => {
+              setSearchTerm(event.target.value)
+            }} />
+             <MyDropzone_file></MyDropzone_file>
         <table className="table table-striped" >
           <thead>
             <tr>
@@ -57,7 +73,32 @@ export default function MesFichiers() {
             </tr>
           </thead>
           <tbody>
-            {files.map(RenderFiles)}
+            {files && files.length> 0 ?
+            files
+            .filter((val)=>{
+              if (searchTerm == ""){
+              //  console.log(val[1])
+                return val
+                
+              }
+              
+              else if (
+                val[0].toLowerCase().includes(searchTerm.toLowerCase())||
+                val[1].toLowerCase().includes(searchTerm.toLowerCase())||
+                val[2].toLowerCase().includes(searchTerm.toLowerCase())||
+                val[3].toString().includes(searchTerm.toString())||
+                val[4].toLowerCase().includes(searchTerm.toLowerCase())||
+                val[5].toLowerCase().includes(searchTerm.toLowerCase())
+                ){
+               
+                return val
+              
+              }
+            })
+            .slice(pagesVisited, pagesVisited + archivePerPage)
+            .map(RenderFiles)
+          :
+          'Loading'}
 
           </tbody>
         </table>
@@ -68,6 +109,16 @@ export default function MesFichiers() {
 
 
       </div>
+      <ReactPaginate
+         previousLabel={"Previous"}
+         nextLabel={"Next"}
+         pageCount={pageCount}
+         onPageChange={changePage}
+         containerClassName={"paginationBttns"}
+         previousClassName={"previousBttn"}
+         nextLinkClassName={"nextBttn"}
+         activeClassName={"paginationActive"}
+       />
     </main>
 
 
@@ -81,7 +132,7 @@ export function RenderFiles(file, index) {
 
     console.log(num)
     history.push({
-      pathname: '/ListeVersions/' + num,
+      pathname: '/ListeVersions/',
       state: {  // location state
         num: num,
       },

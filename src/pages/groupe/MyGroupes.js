@@ -16,10 +16,10 @@ export default function MyGroupes() {
     
     const [groupesPrives, setGroupesPrives] = useState([]);
     const [pageNumber, setPageNumber] = useState(0);
-    const archivePerPage = 3;
-    const pagesVisited = pageNumber * archivePerPage;
+    const cardPerPage = 6;
+    const pagesVisited = pageNumber * cardPerPage;
     const [searchTerm, setSearchTerm] = useState('')
-    const pageCount = Math.ceil(groupesPrives.length / archivePerPage);
+    const pageCount = Math.ceil(groupesPrives.length / cardPerPage);
     const changePage = ({ selected }) => { setPageNumber(selected); };
     const history = useHistory();
     const id = localStorage.getItem("id");
@@ -92,19 +92,20 @@ export default function MyGroupes() {
     }
 
     const displayGroupesPrv = groupesPrives
-    .slice(pagesVisited, pagesVisited + archivePerPage)
+    
     .filter((val)=>{
       if (searchTerm == ""){
         return val
         
       }
       
-      else if (val.groupe.name.toLowerCase().incldes(searchTerm.toLowerCase())){
+      else if (val[1].toLowerCase().includes(searchTerm.toLowerCase())){
         
         return val
       
       }
     })
+    .slice(pagesVisited, pagesVisited + cardPerPage)
     .map((groupe, key) => {
       return (
         <div className="card" key={key} style={{ width: "18rem" }}>
